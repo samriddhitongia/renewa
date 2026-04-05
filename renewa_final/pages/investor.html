@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Investor Portal — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/toast.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+
+<header class="navbar" role="banner"></header>
+
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<main role="main">
+  <div class="container dashboard-page">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title animate-fade-in-up">Investor Portal</h1>
+        <p class="dash-subtitle animate-fade-in-up delay-100">Fund renewable projects, track ROI and environmental impact.</p>
+      </div>
+      <div class="balance-pill animate-fade-in-up delay-200">
+        <div>
+          <div class="balance-pill-label">Available Balance</div>
+          <div class="balance-pill-value">$125,000.00</div>
+        </div>
+        <button class="btn btn-default btn-rounded" onclick="openTopupModal()">Add Funds</button>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-cards-row cols-4 animate-fade-in-up delay-100">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Total Invested</div>
+            <div class="stat-card-value">$450,000</div>
+          </div>
+          <div class="stat-icon" style="background:var(--blue-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">Across 4 active projects</div>
+      </div>
+
+      <div class="stat-card stat-card-featured">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Total Yield Earned</div>
+            <div class="stat-card-value">+$32,450</div>
+          </div>
+          <div class="stat-icon" style="background:rgba(255,255,255,0.15)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub"><span style="background:rgba(255,255,255,0.2);color:white;padding:0.15rem 0.6rem;border-radius:50rem;font-size:0.72rem;font-weight:700">9.2% Avg ROI</span></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Impact Generated</div>
+            <div class="stat-card-value">1.2 <span class="stat-card-unit">MW</span></div>
+          </div>
+          <div class="stat-icon" style="background:var(--primary-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">Clean capacity funded</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">CO₂ Prevented</div>
+            <div class="stat-card-value">28,400 <span class="stat-card-unit">t</span></div>
+          </div>
+          <div class="stat-icon" style="background:var(--primary-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">
+              <path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">Per year from funded projects</div>
+      </div>
+    </div>
+
+    <!-- Row 1: ROI Chart + Portfolio -->
+    <div class="dash-content-grid ratio-2-1 animate-fade-in-up delay-200">
+      <!-- ROI Chart -->
+      <div class="card">
+        <div class="card-header">
+          <h3>ROI Performance Over Time (%)</h3>
+          <div class="chart-legend">
+            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:hsl(152,76%,40%)"></div>Portfolio ROI</div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div style="background:var(--muted);border-radius:0.75rem;padding:1rem;margin-bottom:1rem;display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem">
+            <div style="text-align:center">
+              <div style="font-size:0.68rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em">Best Quarter</div>
+              <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;color:var(--primary)">+9.2%</div>
+            </div>
+            <div style="text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border)">
+              <div style="font-size:0.68rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em">Avg ROI</div>
+              <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;color:var(--foreground)">+6.4%</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:0.68rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em">vs S&amp;P 500</div>
+              <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;color:var(--secondary)">+2.8%</div>
+            </div>
+          </div>
+          <div class="chart-container" id="chartROI"></div>
+        </div>
+      </div>
+
+      <!-- Portfolio + Quick Actions -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <!-- Portfolio -->
+        <div class="card" style="flex:1">
+          <div class="card-header"><h3>My Portfolio</h3></div>
+          <div class="card-content">
+            <div class="portfolio-item">
+              <div class="portfolio-dot" style="background:hsl(38,80%,48%)"></div>
+              <div>
+                <div class="portfolio-name">Apex Solar Array</div>
+                <div class="portfolio-roi">8.5% ROI</div>
+              </div>
+              <div style="text-align:right">
+                <div class="portfolio-amount">$150,000</div>
+                <div class="portfolio-status badge badge-emerald" style="float:right;margin-top:0.25rem">Active</div>
+              </div>
+            </div>
+            <div class="portfolio-item">
+              <div class="portfolio-dot" style="background:hsl(213,75%,48%)"></div>
+              <div>
+                <div class="portfolio-name">North Sea Wind</div>
+                <div class="portfolio-roi">10.2% ROI</div>
+              </div>
+              <div style="text-align:right">
+                <div class="portfolio-amount">$200,000</div>
+                <div class="portfolio-status badge badge-emerald" style="float:right;margin-top:0.25rem">Active</div>
+              </div>
+            </div>
+            <div class="portfolio-item">
+              <div class="portfolio-dot" style="background:hsl(152,65%,38%)"></div>
+              <div>
+                <div class="portfolio-name">Sahara Biomass</div>
+                <div class="portfolio-roi">7.8% ROI</div>
+              </div>
+              <div style="text-align:right">
+                <div class="portfolio-amount">$60,000</div>
+                <div class="portfolio-status badge badge-yellow" style="background:var(--yellow-10);color:var(--yellow-500);float:right;margin-top:0.25rem">Funding</div>
+              </div>
+            </div>
+            <div class="portfolio-item">
+              <div class="portfolio-dot" style="background:hsl(260,60%,52%)"></div>
+              <div>
+                <div class="portfolio-name">Alpine Wind</div>
+                <div class="portfolio-roi">9.0% ROI</div>
+              </div>
+              <div style="text-align:right">
+                <div class="portfolio-amount">$40,000</div>
+                <div class="portfolio-status badge badge-emerald" style="float:right;margin-top:0.25rem">Active</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet -->
+        <div class="wallet-box">
+          <div class="wallet-label">Revenue Earned</div>
+          <div class="wallet-amount">$32,450.00</div>
+          <div class="wallet-sub">+$2,840 this month · 9.2% avg return</div>
+          <div class="wallet-actions">
+            <button class="wallet-btn wallet-btn-primary" onclick="showToast('Withdraw', 'Processing withdrawal...')">Withdraw</button>
+            <button class="wallet-btn wallet-btn-secondary" onclick="showToast('Reinvest', 'Opening reinvestment options...')">Reinvest</button>
+          </div>
+        </div>
+
+        <!-- Face ID Card -->
+        <div class="wallet-box" style="margin-top:.75rem">
+          <div class="wallet-label">🔐 Face ID Login</div>
+          <div id="faceStatusBadge" style="font-size:.85rem;font-weight:700;color:var(--muted-fg);margin:.25rem 0 .5rem">Checking…</div>
+          <div id="kycStatusBadge" style="font-size:.82rem;font-weight:700;margin:.15rem 0 .5rem;color:#f59e0b;">⚠️ KYC Pending</div>
+          <div class="wallet-actions">
+            <button class="wallet-btn wallet-btn-primary" onclick="openFaceRegisterModal()">Setup Face ID</button>
+            <button class="wallet-btn wallet-btn-primary" style="background:#2563eb;margin-top:.4rem;width:100%" onclick="openKYCModal()">🪪 Complete KYC</button>
+            <button class="wallet-btn wallet-btn-secondary" onclick="removeFaceId()">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: ROI projection visual -->
+    <div class="card animate-fade-in-up delay-300" style="margin-bottom:1.5rem">
+      <div class="card-header">
+        <h3>Expected ROI Projections by Project</h3>
+      </div>
+      <div class="card-content">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem">
+          <div style="background:var(--muted);border-radius:0.875rem;padding:1.25rem;text-align:center;transition:all 0.22s ease;cursor:default" onmouseenter="this.style.background='var(--primary-10)';this.style.borderColor='var(--ring)'" onmouseleave="this.style.background='var(--muted)';this.style.borderColor='transparent'">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);margin-bottom:0.5rem">Apex Solar</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:var(--primary)">8.5%</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">5-yr term · 12 MW</div>
+            <div style="margin-top:0.75rem"><div style="height:0.35rem;background:var(--border);border-radius:50rem;overflow:hidden"><div style="height:100%;width:74%;background:var(--primary);border-radius:50rem"></div></div><div style="font-size:0.65rem;color:var(--primary);font-weight:700;margin-top:0.25rem">74% funded</div></div>
+          </div>
+          <div style="background:var(--muted);border-radius:0.875rem;padding:1.25rem;text-align:center;transition:all 0.22s ease;cursor:default" onmouseenter="this.style.background='var(--blue-10)'" onmouseleave="this.style.background='var(--muted)'">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);margin-bottom:0.5rem">North Sea Wind</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:hsl(213,93%,55%)">10.2%</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">10-yr term · 50 MW</div>
+            <div style="margin-top:0.75rem"><div style="height:0.35rem;background:var(--border);border-radius:50rem;overflow:hidden"><div style="height:100%;width:84%;background:hsl(213,93%,55%);border-radius:50rem"></div></div><div style="font-size:0.65rem;color:hsl(213,93%,55%);font-weight:700;margin-top:0.25rem">84% funded</div></div>
+          </div>
+          <div style="background:var(--muted);border-radius:0.875rem;padding:1.25rem;text-align:center;transition:all 0.22s ease;cursor:default" onmouseenter="this.style.background='var(--primary-10)'" onmouseleave="this.style.background='var(--muted)'">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);margin-bottom:0.5rem">Sahara Biomass</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:var(--primary)">7.8%</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">7-yr term · 8 MW</div>
+            <div style="margin-top:0.75rem"><div style="height:0.35rem;background:var(--border);border-radius:50rem;overflow:hidden"><div style="height:100%;width:40%;background:var(--primary);border-radius:50rem"></div></div><div style="font-size:0.65rem;color:var(--primary);font-weight:700;margin-top:0.25rem">40% funded</div></div>
+          </div>
+          <div style="background:var(--muted);border-radius:0.875rem;padding:1.25rem;text-align:center;transition:all 0.22s ease;cursor:default" onmouseenter="this.style.background='hsla(195,80%,42%,0.1)'" onmouseleave="this.style.background='var(--muted)'">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);margin-bottom:0.5rem">Pacific Tidal</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:hsl(195,80%,42%)">11.5%</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">15-yr term · 30 MW</div>
+            <div style="margin-top:0.75rem"><div style="height:0.35rem;background:var(--border);border-radius:50rem;overflow:hidden"><div style="height:100%;width:30%;background:hsl(195,80%,42%);border-radius:50rem"></div></div><div style="font-size:0.65rem;color:hsl(195,80%,42%);font-weight:700;margin-top:0.25rem">30% funded</div></div>
+          </div>
+          <div style="background:var(--muted);border-radius:0.875rem;padding:1.25rem;text-align:center;transition:all 0.22s ease;cursor:default" onmouseenter="this.style.background='hsla(260,60%,52%,0.1)'" onmouseleave="this.style.background='var(--muted)'">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);margin-bottom:0.5rem">Alpine Wind</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:hsl(260,60%,52%)">9.0%</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">8-yr term · 25 MW</div>
+            <div style="margin-top:0.75rem"><div style="height:0.35rem;background:var(--border);border-radius:50rem;overflow:hidden"><div style="height:100%;width:90%;background:hsl(260,60%,52%);border-radius:50rem"></div></div><div style="font-size:0.65rem;color:hsl(260,60%,52%);font-weight:700;margin-top:0.25rem">90% funded</div></div>
+          </div>
+          <div style="background:var(--muted);border-radius:0.875rem;padding:1.25rem;text-align:center;transition:all 0.22s ease;cursor:default" onmouseenter="this.style.background='hsla(30,90%,52%,0.1)'" onmouseleave="this.style.background='var(--muted)'">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);margin-bottom:0.5rem">Gujarat Solar</div>
+            <div style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;color:hsl(30,80%,48%)">12.1%</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">20-yr term · 100 MW</div>
+            <div style="margin-top:0.75rem"><div style="height:0.35rem;background:var(--border);border-radius:50rem;overflow:hidden"><div style="height:100%;width:32%;background:hsl(30,80%,48%);border-radius:50rem"></div></div><div style="font-size:0.65rem;color:hsl(30,80%,48%);font-weight:700;margin-top:0.25rem">32% funded</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Open Opportunities -->
+    <h2 class="section-label animate-fade-in-up delay-300">Open Investment Opportunities</h2>
+    <div id="projectsGrid" class="animate-fade-in-up delay-400"></div>
+
+  </div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/razorpay.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/charts.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Session guard + role check
+    if (!Session.isLoggedIn()) {
+      window.location.href = 'auth.html';
+      return;
+    }
+    const user = Session.get();
+    const pageRole = 'investor';
+    const roleMap = { consumer: 'consumer.html', producer: 'producer.html', investor: 'investor.html' };
+    if (user.role !== pageRole) {
+      window.location.href = roleMap[user.role] || 'consumer.html';
+      return;
+    }
+    injectNavbar('dashboard');
+  });
+</script>
+
+<!-- ── Razorpay Wallet Top-Up Modal ─────────────────────────── -->
+<div id="topupMod" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);border-radius:16px;padding:2rem;width:min(380px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.2);">
+    <h2 style="margin:0 0 1rem;font-size:1.25rem;">Add Funds to Wallet</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;">
+      <button class="btn btn-outline" onclick="selectTopup(500)">₹500</button>
+      <button class="btn btn-outline" onclick="selectTopup(1000)">₹1,000</button>
+      <button class="btn btn-outline" onclick="selectTopup(2000)">₹2,000</button>
+      <button class="btn btn-outline" onclick="selectTopup(5000)">₹5,000</button>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;">
+      <input id="topupCustom" type="number" min="1" placeholder="Custom amount (₹)" style="flex:1;padding:.6rem .8rem;border:1px solid var(--border,#ddd);border-radius:8px;font-size:.95rem;"/>
+    </div>
+    <div style="display:flex;gap:.75rem;">
+      <button class="btn btn-default" style="flex:1;" onclick="proceedTopup()">Pay with Razorpay</button>
+      <button class="btn btn-outline" onclick="closeTopupModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+  function openTopupModal() { document.getElementById('topupMod').style.display = 'flex'; }
+  function closeTopupModal() { document.getElementById('topupMod').style.display = 'none'; }
+  function selectTopup(a) { document.getElementById('topupCustom').value = a; }
+  function proceedTopup() {
+    const amount = parseFloat(document.getElementById('topupCustom').value);
+    if (!amount || amount < 1) { showToast('Invalid Amount', 'Enter a valid amount'); return; }
+    closeTopupModal();
+    razorpayWalletTopup(amount);
+  }
+</script>
+
+<script src="../js/face.js"></script>
+<script src="../js/kyc.js"></script>
+
+<!-- ── Face Register Modal ───────────────────────────────────── -->
+<div id="faceRegMod" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);border-radius:16px;padding:1.75rem;width:min(440px,95vw);box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h2 style="margin:0;font-size:1.15rem;">🔐 Setup Face ID</h2>
+      <button onclick="closeFaceRegModal()" style="border:none;background:none;font-size:1.5rem;cursor:pointer;line-height:1;color:#888">✕</button>
+    </div>
+
+    <!-- Status bar -->
+    <div id="faceRegStatus" style="font-size:.82rem;font-weight:700;padding:.5rem .75rem;background:#eff6ff;border-radius:.5rem;margin-bottom:.75rem;color:#2563eb;min-height:2.2em;line-height:1.4;white-space:pre-line;">
+      Click "Start Camera" below to begin
+    </div>
+
+    <!-- Camera + canvas overlay -->
+    <div style="position:relative;width:100%;background:#0f172a;border-radius:.875rem;overflow:hidden;border:2px solid #334155;margin-bottom:.75rem;aspect-ratio:4/3;">
+      <video id="faceRegVideo" autoplay muted playsinline
+        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block;"></video>
+      <canvas id="faceRegCanvas"
+        style="position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none;"></canvas>
+      <!-- Oval guide -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="width:48%;aspect-ratio:3/4;border:3px dashed rgba(255,255,255,.45);border-radius:50%;box-shadow:0 0 0 1000px rgba(0,0,0,.15)inset;"></div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+      <button id="faceRegStartBtn" onclick="startFaceReg()"
+        style="padding:.7rem;border-radius:.75rem;border:none;background:#2563eb;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;">
+        📷 Start Camera
+      </button>
+      <button id="faceRegCaptureBtn" onclick="captureFaceReg()"
+        style="display:none;padding:.7rem;border-radius:.75rem;border:none;background:#16a34a;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;">
+        ✅ Register Face
+      </button>
+    </div>
+
+    <p style="font-size:.72rem;color:#94a3b8;margin:.75rem 0 0;line-height:1.5;">
+      💡 Only a mathematical vector is stored — never a photo. Your face data stays private on your own server.
+    </p>
+  </div>
+</div>
+
+<script>
+async function openFaceRegisterModal() {
+  document.getElementById('faceRegMod').style.display = 'flex';
+}
+
+function closeFaceRegModal() {
+  stopFaceCamera();
+  document.getElementById('faceRegMod').style.display = 'none';
+  const sb = document.getElementById('faceRegStartBtn');
+  const cb = document.getElementById('faceRegCaptureBtn');
+  if (sb) { sb.style.display = 'block'; sb.disabled = false; sb.textContent = '📷 Start Camera'; }
+  if (cb) { cb.style.display = 'none';  cb.disabled = false; cb.textContent = '✅ Register Face'; }
+  updateFaceStatusEl('faceRegStatus', 'Click "Start Camera" below to begin', 'waiting');
+}
+
+async function startFaceReg() {
+  const sb = document.getElementById('faceRegStartBtn');
+  const cb = document.getElementById('faceRegCaptureBtn');
+  sb.disabled = true;
+  sb.textContent = '⏳ Loading models…';
+  updateFaceStatusEl('faceRegStatus', '⏳ Loading AI face models (first time may take ~10s)…', 'waiting');
+
+  try {
+    await loadFaceModels();
+    updateFaceStatusEl('faceRegStatus', '📷 Starting camera…', 'waiting');
+    await startFaceCamera('faceRegVideo');
+    startLiveDetection('faceRegVideo', 'faceRegCanvas', 'faceRegStatus');
+    sb.style.display = 'none';
+    cb.style.display = 'block';
+  } catch(e) {
+    updateFaceStatusEl('faceRegStatus', '❌ ' + e.message, 'error');
+    sb.disabled = false;
+    sb.textContent = '🔄 Retry';
+  }
+}
+
+async function captureFaceReg() {
+  const cb = document.getElementById('faceRegCaptureBtn');
+  const statusEl = document.getElementById('faceRegStatus');
+  cb.disabled = true;
+  cb.textContent = '⏳ Detecting…';
+
+  // Show token status immediately so we can debug
+  const token = localStorage.getItem('token') ||
+    (() => { try { return JSON.parse(sessionStorage.getItem('renewa_user'))?.token; } catch { return null; } })();
+
+  if (!token) {
+    cb.disabled = false;
+    cb.textContent = '🔄 Try Again';
+    if (statusEl) { statusEl.textContent = '❌ Not logged in — please log out and log back in'; statusEl.style.color = '#dc2626'; }
+    return;
+  }
+
+  const ok = await registerFace('faceRegVideo', 'faceRegStatus');
+  cb.disabled = false;
+  cb.textContent = ok ? '✅ Registered!' : '🔄 Try Again';
+  if (ok) {
+    if (typeof checkFaceStatus === 'function') checkFaceStatus();
+    setTimeout(closeFaceRegModal, 2200);
+  }
+}
+
+async function removeFaceId() {
+  if (!confirm('Remove your Face ID? You will need to re-register to use face login.')) return;
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res  = await fetch('http://localhost:5000/api/face/remove', {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    if (typeof showToast === 'function') showToast('Face ID Removed', data.message);
+    checkFaceStatus();
+  } catch(e) {
+    alert('Error removing face data: ' + e.message);
+  }
+}
+
+async function checkFaceStatus() {
+  const token = getToken();
+  const badge = document.getElementById('faceStatusBadge');
+  if (!token || !badge) return;
+  try {
+    const res  = await fetch('http://localhost:5000/api/face/status', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    badge.innerHTML = data.faceRegistered
+      ? '<span style="color:#16a34a;font-weight:700;">✅ Face ID active</span>'
+      : '<span style="color:#f59e0b;font-weight:700;">⚠️ Not set up yet</span>';
+  } catch {
+    badge.textContent = 'Could not check status';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { setTimeout(checkFaceStatus, 1000); initKYCBanner(); });
+</script>
+</body>
+</html>

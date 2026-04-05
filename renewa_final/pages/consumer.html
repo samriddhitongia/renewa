@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consumer Dashboard — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/toast.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+
+<header class="navbar" role="banner"></header>
+
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<main role="main">
+  <div class="container dashboard-page">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title animate-fade-in-up">Consumer Dashboard</h1>
+        <p class="dash-subtitle animate-fade-in-up delay-100">Track your clean energy usage, savings and carbon impact.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap" class="animate-fade-in-up delay-200">
+        <button class="btn btn-outline" onclick="showToast('Report', 'Downloading energy report...')">Download Report</button>
+        <a class="btn btn-default" href="marketplace.html">Buy Energy</a>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-cards-row cols-3 animate-fade-in-up delay-100">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Total CO₂ Saved</div>
+            <div class="stat-card-value" style="color:var(--primary)">2,450 <span class="stat-card-unit">kg</span></div>
+          </div>
+          <div class="stat-icon" style="background:var(--primary-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">
+              <path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">Equivalent to 🌳 <strong>114 trees planted</strong></div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Energy Purchased</div>
+            <div class="stat-card-value">4,120 <span class="stat-card-unit">kWh</span></div>
+          </div>
+          <div class="stat-icon" style="background:var(--yellow-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow-500)" stroke-width="2" stroke-linecap="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">This month · 100% renewable</div>
+      </div>
+
+      <div class="stat-card stat-card-featured">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Cost Savings</div>
+            <div class="stat-card-value">$142.50</div>
+          </div>
+          <div class="stat-icon" style="background:rgba(255,255,255,0.15)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">vs traditional utility rates</div>
+      </div>
+    </div>
+
+    <!-- Row 1: CO2 Meter + Energy Mix + Sustainability Score -->
+    <div class="dash-content-grid cols-3 animate-fade-in-up delay-200">
+
+      <!-- CO2 Meter -->
+      <div class="card">
+        <div class="card-header"><h3>CO₂ Savings Meter</h3></div>
+        <div class="card-content">
+          <div class="co2-meter">
+            <div class="co2-meter-title">Carbon Footprint Reduction</div>
+            <div id="co2Arc"></div>
+            <div class="co2-big-num">2,450 <span style="font-size:1rem;font-weight:600;color:var(--muted-fg)">kg</span></div>
+            <div class="co2-big-sub">of 5,000 kg annual goal</div>
+            <div class="co2-trees">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg>
+              Equivalent to 114 trees
+            </div>
+          </div>
+
+          <!-- Monthly breakdown hbars -->
+          <div style="margin-top:1.25rem">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem">Monthly Breakdown</div>
+            <div class="mini-hbar">
+              <div class="mini-hbar-label"><span>Solar</span><span>1,593 kg</span></div>
+              <div class="mini-hbar-track"><div class="mini-hbar-fill" style="width:0%;background:hsl(45,93%,47%)" data-width="65%"></div></div>
+            </div>
+            <div class="mini-hbar">
+              <div class="mini-hbar-label"><span>Wind</span><span>613 kg</span></div>
+              <div class="mini-hbar-track"><div class="mini-hbar-fill" style="width:0%;background:hsl(213,93%,55%)" data-width="25%"></div></div>
+            </div>
+            <div class="mini-hbar">
+              <div class="mini-hbar-label"><span>Biomass</span><span>245 kg</span></div>
+              <div class="mini-hbar-track"><div class="mini-hbar-fill" style="width:0%;background:hsl(152,76%,40%)" data-width="10%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Energy Mix Donut -->
+      <div class="card">
+        <div class="card-header"><h3>Your Energy Mix</h3></div>
+        <div class="card-content">
+          <div class="donut-wrap">
+            <div class="donut-svg-wrap">
+              <div id="donutChart"></div>
+              <div class="donut-center">
+                <div class="donut-center-value">100%</div>
+                <div class="donut-center-label">Renewable</div>
+              </div>
+            </div>
+            <div class="pie-legend">
+              <div class="pie-legend-row">
+                <div class="pie-legend-left"><div class="pie-dot" style="background:hsl(45,93%,47%)"></div>Solar</div>
+                <span class="pie-legend-pct">65%</span>
+              </div>
+              <div class="pie-legend-row">
+                <div class="pie-legend-left"><div class="pie-dot" style="background:hsl(213,93%,55%)"></div>Wind</div>
+                <span class="pie-legend-pct">25%</span>
+              </div>
+              <div class="pie-legend-row">
+                <div class="pie-legend-left"><div class="pie-dot" style="background:hsl(152,76%,40%)"></div>Biomass</div>
+                <span class="pie-legend-pct">10%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Current Usage Stats -->
+          <div style="margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border)">
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.75rem">Current Usage Stats</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div style="background:var(--muted);border-radius:0.75rem;padding:0.75rem;text-align:center">
+                <div style="font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;color:var(--foreground)">4.2</div>
+                <div style="font-size:0.7rem;color:var(--muted-fg);font-weight:700">kWh today</div>
+              </div>
+              <div style="background:var(--muted);border-radius:0.75rem;padding:0.75rem;text-align:center">
+                <div style="font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;color:var(--primary)">A+</div>
+                <div style="font-size:0.7rem;color:var(--muted-fg);font-weight:700">score</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sustainability Score + Wallet -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <div class="card" style="flex:1">
+          <div class="card-header"><h3>Sustainability Score</h3></div>
+          <div class="card-content" style="text-align:center">
+            <div class="score-badge" style="margin:0 auto 1rem">A+</div>
+            <div style="font-size:1rem;font-weight:700;margin-bottom:0.25rem">Outstanding!</div>
+            <div style="font-size:0.8rem;color:var(--muted-fg);margin-bottom:1.25rem">You're in the top 5% of consumers</div>
+
+            <div style="display:flex;flex-direction:column;gap:0.6rem">
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem">
+                <span style="font-weight:600;color:var(--muted-fg)">Green Energy Use</span>
+                <span style="font-weight:700;color:var(--primary)">100%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem">
+                <span style="font-weight:600;color:var(--muted-fg)">Carbon Offset</span>
+                <span style="font-weight:700;color:var(--primary)">49%</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.8rem">
+                <span style="font-weight:600;color:var(--muted-fg)">Local Sourcing</span>
+                <span style="font-weight:700;color:var(--primary)">82%</span>
+              </div>
+            </div>
+
+            <div class="sustainability-banner" style="margin-top:1rem">
+              <div class="banner-left">
+                <div class="banner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg></div>
+                <div><div class="banner-title">Top Earner Badge</div><div class="banner-sub">Share your achievement</div></div>
+              </div>
+              <button class="btn-dark" onclick="showToast('Shared!', 'Achievement posted to your profile')">Share</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet -->
+        <div class="wallet-box">
+          <div class="wallet-label">Wallet & Payments</div>
+          <div class="wallet-amount" id="consumerWalletAmt">₹1,000.00</div>
+          <div class="wallet-sub" id="consumerWalletSub">Loading balance...</div>
+          <div class="wallet-actions">
+            <button class="wallet-btn wallet-btn-primary" onclick="openTopupModal()">Add Funds</button>
+            <button class="wallet-btn wallet-btn-secondary" onclick="showToast('Statement', 'Generating statement...')">Statement</button>
+          </div>
+        </div>
+
+        <!-- Face ID Card -->
+        <div class="wallet-box" style="margin-top:.75rem">
+          <div class="wallet-label">🔐 Face ID Login</div>
+          <div id="faceStatusBadge" style="font-size:.85rem;font-weight:700;color:var(--muted-fg);margin:.25rem 0 .5rem">
+            Checking…
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-btn wallet-btn-primary" onclick="openFaceRegisterModal()">Setup Face ID</button>
+            <button class="wallet-btn wallet-btn-primary" style="background:#2563eb;margin-top:.4rem;width:100%" onclick="openKYCModal()">🪪 Complete KYC</button>
+            <button class="wallet-btn wallet-btn-secondary" onclick="removeFaceId()">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Usage Chart + Cost Chart -->
+    <div class="dash-content-grid ratio-1-1 animate-fade-in-up delay-300">
+      <div class="card">
+        <div class="card-header">
+          <h3>Daily Energy Usage (kWh)</h3>
+          <div class="chart-legend">
+            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:hsl(152,76%,40%)"></div>Usage</div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="chart-container chart-container-sm" id="chartUsage"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Monthly Cost vs Savings ($)</h3>
+          <div class="chart-legend">
+            <div class="chart-legend-item"><div class="chart-legend-dot" style="background:hsl(213,93%,55%)"></div>Renewa Cost</div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div style="background:var(--muted);border-radius:0.75rem;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.06em">You save vs utility</div>
+              <div style="font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:var(--primary)">~31%</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:0.75rem;color:var(--muted-fg)">Renewa avg: <strong style="color:var(--foreground)">$0.11/kWh</strong></div>
+              <div style="font-size:0.75rem;color:var(--muted-fg)">Utility avg: <strong style="color:var(--muted-fg)">$0.16/kWh</strong></div>
+            </div>
+          </div>
+          <div class="chart-container chart-container-sm" id="chartMonthlyCost"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Active Subscriptions + Purchase History -->
+    <div class="dash-content-grid ratio-1-1 animate-fade-in-up delay-300">
+
+      <!-- Active Subscriptions -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Active Subscriptions</h3>
+          <a class="btn btn-outline btn-sm" href="marketplace.html">+ Add Source</a>
+        </div>
+        <div class="card-content">
+          <div class="sub-item">
+            <div class="sub-item-left">
+              <div class="sub-icon" style="background:var(--yellow-10)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow-500)" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <div>
+                <div class="sub-name">SunFarm Co.</div>
+                <div class="sub-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Local Grid</div>
+              </div>
+            </div>
+            <div class="sub-item-right">
+              <div class="sub-price">$60.00<span style="font-size:0.72rem;font-weight:400;color:var(--muted-fg)">/mo</span></div>
+              <div class="sub-amount">500 kWh/mo · Solar</div>
+              <button class="btn btn-outline btn-sm btn-rounded" onclick="showToast('Manage', 'Opening subscription settings...')">Manage</button>
+            </div>
+          </div>
+
+          <div class="sub-item">
+            <div class="sub-item-left">
+              <div class="sub-icon" style="background:var(--blue-10)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2" stroke-linecap="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+              </div>
+              <div>
+                <div class="sub-name">Coastal Winds</div>
+                <div class="sub-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Regional Grid</div>
+              </div>
+            </div>
+            <div class="sub-item-right">
+              <div class="sub-price">$30.00<span style="font-size:0.72rem;font-weight:400;color:var(--muted-fg)">/mo</span></div>
+              <div class="sub-amount">300 kWh/mo · Wind</div>
+              <button class="btn btn-outline btn-sm btn-rounded" onclick="showToast('Manage', 'Opening subscription settings...')">Manage</button>
+            </div>
+          </div>
+
+          <div class="sub-item">
+            <div class="sub-item-left">
+              <div class="sub-icon" style="background:var(--primary-10)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg>
+              </div>
+              <div>
+                <div class="sub-name">BioEnergy Hub</div>
+                <div class="sub-location"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>National Grid</div>
+              </div>
+            </div>
+            <div class="sub-item-right">
+              <div class="sub-price">$18.00<span style="font-size:0.72rem;font-weight:400;color:var(--muted-fg)">/mo</span></div>
+              <div class="sub-amount">150 kWh/mo · Biomass</div>
+              <button class="btn btn-outline btn-sm btn-rounded" onclick="showToast('Manage', 'Opening subscription settings...')">Manage</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase History -->
+      <div class="card">
+        <div class="card-header"><h3>Purchase History</h3></div>
+        <div class="card-content">
+          <div id="purchaseHistory">
+            <div style="text-align:center;padding:1.5rem;color:var(--muted-fg);font-size:0.85rem">Loading purchase history...</div>
+          </div>
+          <button class="btn btn-outline" style="width:100%;margin-top:1rem;border-radius:0.75rem" onclick="showToast('History', 'Showing all recent purchases above')">View All Purchases</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/razorpay.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/charts.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (!Session.isLoggedIn()) { window.location.href = 'auth.html'; return; }
+    const user = Session.get();
+    const roleMap = { consumer: 'consumer.html', producer: 'producer.html', investor: 'investor.html' };
+    if (user.role !== 'consumer') { window.location.href = roleMap[user.role] || 'consumer.html'; return; }
+    injectNavbar('dashboard');
+
+    // Show session wallet immediately while fetching
+    const walEl = document.getElementById('consumerWalletAmt');
+    const walSub = document.getElementById('consumerWalletSub');
+    if (walEl && user.walletBalance !== undefined) {
+      walEl.textContent = '₹' + Number(user.walletBalance).toFixed(2);
+    }
+
+    // Fetch real data from backend
+    try {
+      const token = user.token || localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/dashboard/consumer', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const wallet = data.user?.walletBalance ?? data.stats?.walletBalance;
+        const energyKwh = data.user?.totalEnergyPurchased ?? 0;
+
+        // Update wallet display
+        if (walEl && wallet !== undefined) {
+          walEl.textContent = '₹' + Number(wallet).toFixed(2);
+        }
+        if (walSub) {
+          walSub.textContent = energyKwh > 0 ? `${energyKwh.toLocaleString()} kWh purchased total` : 'No purchases yet';
+        }
+
+        // Update Energy Purchased stat card
+        document.querySelectorAll('.stat-card').forEach(card => {
+          const label = card.querySelector('.stat-card-label');
+          if (label && label.textContent.trim() === 'Energy Purchased') {
+            const valEl = card.querySelector('.stat-card-value');
+            if (valEl) valEl.innerHTML = energyKwh.toLocaleString() + ' <span class="stat-card-unit">kWh</span>';
+          }
+        });
+
+        // Sync session
+        Session.set({ walletBalance: wallet });
+      }
+    } catch (e) {
+      console.warn('Dashboard fetch failed:', e.message);
+      if (walSub) walSub.textContent = 'Could not load live data';
+    }
+  });
+</script>
+
+<!-- ── Razorpay Wallet Top-Up Modal ─────────────────────────── -->
+<div id="topupMod" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);border-radius:16px;padding:2rem;width:min(380px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.2);">
+    <h2 style="margin:0 0 1rem;font-size:1.25rem;">Add Funds to Wallet</h2>
+    <p style="color:var(--muted-fg,#666);margin:0 0 1.25rem;font-size:.9rem;">Select an amount to top up via Razorpay:</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;">
+      <button class="btn btn-outline" onclick="selectTopup(500)">₹500</button>
+      <button class="btn btn-outline" onclick="selectTopup(1000)">₹1,000</button>
+      <button class="btn btn-outline" onclick="selectTopup(2000)">₹2,000</button>
+      <button class="btn btn-outline" onclick="selectTopup(5000)">₹5,000</button>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;">
+      <input id="topupCustom" type="number" min="1" placeholder="Custom amount (₹)" class="form-input" style="flex:1;padding:.6rem .8rem;border:1px solid var(--border,#ddd);border-radius:8px;font-size:.95rem;"/>
+    </div>
+    <div style="display:flex;gap:.75rem;">
+      <button class="btn btn-default" style="flex:1;" onclick="proceedTopup()">Pay with Razorpay</button>
+      <button class="btn btn-outline" onclick="closeTopupModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openTopupModal() {
+    document.getElementById('topupMod').style.display = 'flex';
+    document.getElementById('topupCustom').value = '';
+  }
+  function closeTopupModal() {
+    document.getElementById('topupMod').style.display = 'none';
+  }
+  function selectTopup(amount) {
+    document.getElementById('topupCustom').value = amount;
+  }
+  function proceedTopup() {
+    const amount = parseFloat(document.getElementById('topupCustom').value);
+    if (!amount || amount < 1) {
+      showToast('Invalid Amount', 'Please enter a valid amount');
+      return;
+    }
+    closeTopupModal();
+    razorpayWalletTopup(amount);
+  }
+  function updateWalletDisplay(balance) {
+    const el = document.getElementById('consumerWalletAmt');
+    if (el) el.textContent = '₹' + Number(balance).toFixed(2);
+  }
+</script>
+
+<!-- ── face-api.js ─────────────────────────────────────────── -->
+<script src="../js/face.js"></script>
+<script src="../js/kyc.js"></script>
+
+<!-- ── Face Register Modal ───────────────────────────────────── -->
+<div id="faceRegMod" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);border-radius:16px;padding:1.75rem;width:min(440px,95vw);box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h2 style="margin:0;font-size:1.15rem;">🔐 Setup Face ID</h2>
+      <button onclick="closeFaceRegModal()" style="border:none;background:none;font-size:1.5rem;cursor:pointer;line-height:1;color:#888">✕</button>
+    </div>
+
+    <!-- Status bar -->
+    <div id="faceRegStatus" style="font-size:.82rem;font-weight:700;padding:.5rem .75rem;background:#eff6ff;border-radius:.5rem;margin-bottom:.75rem;color:#2563eb;min-height:2.2em;line-height:1.4;white-space:pre-line;">
+      Click "Start Camera" below to begin
+    </div>
+
+    <!-- Camera + canvas overlay -->
+    <div style="position:relative;width:100%;background:#0f172a;border-radius:.875rem;overflow:hidden;border:2px solid #334155;margin-bottom:.75rem;aspect-ratio:4/3;">
+      <video id="faceRegVideo" autoplay muted playsinline
+        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block;"></video>
+      <canvas id="faceRegCanvas"
+        style="position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none;"></canvas>
+      <!-- Oval guide -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="width:48%;aspect-ratio:3/4;border:3px dashed rgba(255,255,255,.45);border-radius:50%;box-shadow:0 0 0 1000px rgba(0,0,0,.15)inset;"></div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+      <button id="faceRegStartBtn" onclick="startFaceReg()"
+        style="padding:.7rem;border-radius:.75rem;border:none;background:#2563eb;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;">
+        📷 Start Camera
+      </button>
+      <button id="faceRegCaptureBtn" onclick="captureFaceReg()"
+        style="display:none;padding:.7rem;border-radius:.75rem;border:none;background:#16a34a;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;">
+        ✅ Register Face
+      </button>
+    </div>
+
+    <p style="font-size:.72rem;color:#94a3b8;margin:.75rem 0 0;line-height:1.5;">
+      💡 Only a mathematical vector is stored — never a photo. Your face data stays private on your own server.
+    </p>
+  </div>
+</div>
+
+<script>
+async function openFaceRegisterModal() {
+  document.getElementById('faceRegMod').style.display = 'flex';
+}
+
+function closeFaceRegModal() {
+  stopFaceCamera();
+  document.getElementById('faceRegMod').style.display = 'none';
+  const sb = document.getElementById('faceRegStartBtn');
+  const cb = document.getElementById('faceRegCaptureBtn');
+  if (sb) { sb.style.display = 'block'; sb.disabled = false; sb.textContent = '📷 Start Camera'; }
+  if (cb) { cb.style.display = 'none';  cb.disabled = false; cb.textContent = '✅ Register Face'; }
+  updateFaceStatusEl('faceRegStatus', 'Click "Start Camera" below to begin', 'waiting');
+}
+
+async function startFaceReg() {
+  const sb = document.getElementById('faceRegStartBtn');
+  const cb = document.getElementById('faceRegCaptureBtn');
+  sb.disabled = true;
+  sb.textContent = '⏳ Loading models…';
+  updateFaceStatusEl('faceRegStatus', '⏳ Loading AI face models (first time may take ~10s)…', 'waiting');
+
+  try {
+    await loadFaceModels();
+    updateFaceStatusEl('faceRegStatus', '📷 Starting camera…', 'waiting');
+    await startFaceCamera('faceRegVideo');
+    startLiveDetection('faceRegVideo', 'faceRegCanvas', 'faceRegStatus');
+    sb.style.display = 'none';
+    cb.style.display = 'block';
+  } catch(e) {
+    updateFaceStatusEl('faceRegStatus', '❌ ' + e.message, 'error');
+    sb.disabled = false;
+    sb.textContent = '🔄 Retry';
+  }
+}
+
+async function captureFaceReg() {
+  const cb = document.getElementById('faceRegCaptureBtn');
+  const statusEl = document.getElementById('faceRegStatus');
+  cb.disabled = true;
+  cb.textContent = '⏳ Detecting…';
+
+  // Show token status immediately so we can debug
+  const token = localStorage.getItem('token') ||
+    (() => { try { return JSON.parse(sessionStorage.getItem('renewa_user'))?.token; } catch { return null; } })();
+
+  if (!token) {
+    cb.disabled = false;
+    cb.textContent = '🔄 Try Again';
+    if (statusEl) { statusEl.textContent = '❌ Not logged in — please log out and log back in'; statusEl.style.color = '#dc2626'; }
+    return;
+  }
+
+  const ok = await registerFace('faceRegVideo', 'faceRegStatus');
+  cb.disabled = false;
+  cb.textContent = ok ? '✅ Registered!' : '🔄 Try Again';
+  if (ok) {
+    if (typeof checkFaceStatus === 'function') checkFaceStatus();
+    setTimeout(closeFaceRegModal, 2200);
+  }
+}
+
+async function removeFaceId() {
+  if (!confirm('Remove your Face ID? You will need to re-register to use face login.')) return;
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res  = await fetch('http://localhost:5000/api/face/remove', {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    if (typeof showToast === 'function') showToast('Face ID Removed', data.message);
+    checkFaceStatus();
+  } catch(e) {
+    alert('Error removing face data: ' + e.message);
+  }
+}
+
+async function checkFaceStatus() {
+  const token = getToken();
+  const badge = document.getElementById('faceStatusBadge');
+  if (!token || !badge) return;
+  try {
+    const res  = await fetch('http://localhost:5000/api/face/status', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    badge.innerHTML = data.faceRegistered
+      ? '<span style="color:#16a34a;font-weight:700;">✅ Face ID active</span>'
+      : '<span style="color:#f59e0b;font-weight:700;">⚠️ Not set up yet</span>';
+  } catch {
+    badge.textContent = 'Could not check status';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { setTimeout(checkFaceStatus, 1000); initKYCBanner(); });
+</script>
+</body>
+</html>

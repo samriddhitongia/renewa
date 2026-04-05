@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renewa — Peer-to-Peer Renewable Energy Trading</title>
+  <meta name="description" content="Join the world's first peer-to-peer renewable energy trading platform." />
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/toast.css" />
+  <link rel="stylesheet" href="css/home.css" />
+
+  <style>
+    /* Force page visible — standalone (no SPA router) */
+    #page-home { display: block !important; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: hsl(160, 20%, 8%);
+      border-bottom: 1px solid hsl(160,15%,14%);
+      padding: 1.25rem 0;
+    }
+    .stats-bar-inner {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .stats-bar-inner { grid-template-columns: repeat(4, 1fr); padding: 0 2rem; }
+    }
+    .stat-item { text-align: center; }
+    .stat-item-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 900;
+      color: hsl(152, 76%, 50%);
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .stat-item-label {
+      font-size: 0.78rem;
+      color: hsl(140,15%,55%);
+      font-weight: 600;
+      margin-top: 0.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works { padding-block: 6rem; background: var(--background); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+      position: relative;
+    }
+    @media (min-width: 768px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) {
+      .steps-grid { grid-template-columns: repeat(4, 1fr); }
+      .steps-grid::before {
+        content: '';
+        position: absolute;
+        top: 2.8rem;
+        left: calc(12.5% + 1.5rem);
+        right: calc(12.5% + 1.5rem);
+        height: 1.5px;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        opacity: 0.2;
+      }
+    }
+    .step-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .step-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-xl);
+      border-color: hsla(152, 76%, 40%, 0.3);
+    }
+    .step-icon {
+      width: 3.5rem; height: 3.5rem;
+      border-radius: 1rem;
+      background: var(--primary-10);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--primary-20);
+      transition: transform 0.2s;
+    }
+    .step-card:hover .step-icon { transform: scale(1.1); }
+    .step-icon svg { width: 1.6rem; height: 1.6rem; color: var(--primary); }
+    .step-num { font-size: 0.72rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+    .step-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .step-desc { font-size: 0.875rem; color: var(--muted-fg); line-height: 1.7; }
+
+    /* ── PLATFORM FEATURES ── */
+    .platform-features { padding-block: 6rem; background: var(--muted); }
+    .features-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-top: 3.5rem;
+    }
+    @media (min-width: 640px) { .features-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .features-cards-grid { grid-template-columns: repeat(3, 1fr); } }
+    .feature-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: hsla(152,76%,40%,0.25);
+    }
+    .feature-card-icon {
+      width: 3.5rem; height: 3.5rem;
+      border-radius: 1rem;
+      background: var(--primary-10);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--primary-20);
+      transition: all 0.2s;
+    }
+    .feature-card:hover .feature-card-icon { background: var(--primary); }
+    .feature-card:hover .feature-card-icon svg { color: white; }
+    .feature-card-icon svg { width: 1.6rem; height: 1.6rem; color: var(--primary); transition: color 0.2s; }
+    .feature-card h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.65rem; }
+    .feature-card p { font-size: 0.875rem; color: var(--muted-fg); line-height: 1.75; }
+
+    /* ── JOIN AS ROLE ── */
+    .join-role-section { padding-block: 6rem; background: var(--card); }
+    .join-roles-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+    @media (min-width: 640px) { .join-roles-grid { grid-template-columns: repeat(3, 1fr); } }
+    .join-role-card {
+      background: var(--background);
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      box-shadow: var(--shadow-sm);
+    }
+    .join-role-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-xl);
+      border-color: hsla(152,76%,40%,0.3);
+    }
+    .join-role-icon {
+      width: 5rem; height: 5rem;
+      border-radius: 1.25rem;
+      background: var(--primary-10);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--primary-20);
+      transition: all 0.2s;
+    }
+    .join-role-card:hover .join-role-icon { background: var(--primary); }
+    .join-role-card:hover .join-role-icon svg { color: white; }
+    .join-role-icon svg { width: 2.25rem; height: 2.25rem; color: var(--primary); transition: color 0.2s; }
+    .join-role-card h3 { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.75rem; }
+    .join-role-card p { font-size: 0.9rem; color: var(--muted-fg); line-height: 1.7; margin-bottom: 1.75rem; flex: 1; }
+    .join-role-link { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 700; color: var(--primary); transition: gap 0.2s; }
+    .join-role-card:hover .join-role-link { gap: 0.7rem; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { padding-block: 6rem; background: var(--muted); }
+    .testimonials-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 3.5rem; }
+    @media (min-width: 768px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
+    .testimonial-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .testimonial-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: hsla(152,76%,40%,0.2); }
+    .stars { display: flex; gap: 0.25rem; }
+    .star { width: 1.1rem; height: 1.1rem; fill: hsl(45,93%,60%); color: hsl(45,93%,60%); }
+    .testimonial-text { font-size: 0.92rem; line-height: 1.75; color: var(--muted-fg); font-style: italic; flex: 1; }
+    .testimonial-author { display: flex; align-items: center; gap: 0.85rem; }
+    .author-avatar {
+      width: 2.75rem; height: 2.75rem; border-radius: 50%;
+      background: var(--primary-10);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.85rem; color: var(--primary);
+      border: 1px solid var(--primary-20);
+      flex-shrink: 0;
+    }
+    .author-name { font-weight: 700; font-size: 0.9rem; }
+    .author-role { font-size: 0.78rem; color: var(--muted-fg); }
+
+    /* ── CTA ── */
+    .cta-section { padding-block: 6rem; background: var(--card); text-align: center; }
+    .cta-inner { max-width: 44rem; margin: 0 auto; }
+    .cta-inner h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 900; letter-spacing: -0.04em; margin-bottom: 1.25rem; }
+    .cta-inner p { font-size: 1.05rem; color: var(--muted-fg); margin-bottom: 2.5rem; line-height: 1.7; }
+    .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    .section-center { text-align: center; }
+    .section-center h2 { font-size: clamp(1.9rem, 4.5vw, 3rem); font-weight: 900; letter-spacing: -0.04em; margin-bottom: 1rem; }
+    .section-center p { font-size: 1.05rem; color: var(--muted-fg); max-width: 36rem; margin: 0 auto; line-height: 1.7; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar" role="banner"></header>
+
+<div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="false"></div>
+
+<div id="page-home" class="page" role="main">
+
+  <!-- HERO -->
+  <section class="hero-section" aria-label="Hero">
+    <div class="hero-bg" aria-hidden="true">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,hsl(152,40%,88%) 0%,hsl(210,50%,90%) 50%,hsl(140,30%,85%) 100%)"></div>
+      <div class="hero-bg-gradient-bottom"></div>
+      <div class="hero-bg-gradient-side"></div>
+    </div>
+    <div class="container">
+      <div class="hero-inner">
+        <div class="animate-fade-in-up">
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            Live Network: 42,051 kWh Traded Today
+          </div>
+          <h1 class="hero-title">
+            Powering the<br>
+            <span class="text-gradient">Green Economy</span><br>
+            Together
+          </h1>
+          <p class="hero-desc">
+            Join the world's first peer-to-peer renewable energy trading platform.
+            Buy clean energy directly from local producers, or invest in future projects.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn btn-default btn-lg" href="pages/auth.html">
+              Start Trading
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a class="btn btn-outline btn-lg" href="pages/marketplace.html">Explore Marketplace</a>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-visual-blur"></div>
+          <div class="grid-status-card glass-panel">
+            <div class="card-row-top">
+              <div>
+                <div class="card-stat-label">Current Grid Status</div>
+                <div class="card-stat-value">94% <span>Clean</span></div>
+              </div>
+              <div class="card-icon-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+            </div>
+            <div class="energy-bars">
+              <div class="energy-bar-row">
+                <div class="energy-bar-label">
+                  <div class="energy-bar-label-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="hsl(45,93%,47%)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg>
+                    Solar
+                  </div><span>45%</span>
+                </div>
+                <div class="energy-bar-track"><div id="barSolar" class="energy-bar-fill bar-solar" style="width:0%"></div></div>
+              </div>
+              <div class="energy-bar-row">
+                <div class="energy-bar-label">
+                  <div class="energy-bar-label-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="hsl(213,93%,68%)" stroke-width="2" stroke-linecap="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+                    Wind
+                  </div><span>35%</span>
+                </div>
+                <div class="energy-bar-track"><div id="barWind" class="energy-bar-fill bar-wind" style="width:0%"></div></div>
+              </div>
+              <div class="energy-bar-row">
+                <div class="energy-bar-label">
+                  <div class="energy-bar-label-left">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="hsl(160,84%,39%)" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg>
+                    Biomass
+                  </div><span>14%</span>
+                </div>
+                <div class="energy-bar-track"><div id="barBiomass" class="energy-bar-fill bar-biomass" style="width:0%"></div></div>
+              </div>
+            </div>
+            <div class="card-footer-row">
+              <div>
+                <div class="card-stat-label">CO₂ Prevented Today</div>
+                <div class="co2-value">124.5 Tons</div>
+              </div>
+              <span class="badge badge-emerald">↑ 12%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR (dark) -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-item"><div class="stat-item-num" id="statKwh">12,800,000</div><div class="stat-item-label">kWh Traded</div></div>
+      <div class="stat-item"><div class="stat-item-num">5,376t</div><div class="stat-item-label">Tons CO₂ Saved</div></div>
+      <div class="stat-item"><div class="stat-item-num" id="statProd">2,840+</div><div class="stat-item-label">Active Producers</div></div>
+      <div class="stat-item"><div class="stat-item-num" id="statProj">186</div><div class="stat-item-label">Projects Funded</div></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-center animate-fade-in-up">
+        <h2>How It <span class="text-gradient">Works</span></h2>
+        <p>Four simple steps to start trading renewable energy</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card animate-fade-in-up delay-100">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+          <div class="step-num">Step 1</div>
+          <div class="step-title">Produce &amp; List</div>
+          <p class="step-desc">Generate renewable energy from solar, wind or biomass and list your surplus on the marketplace.</p>
+        </div>
+        <div class="step-card animate-fade-in-up delay-200">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <div class="step-num">Step 2</div>
+          <div class="step-title">Trade &amp; Match</div>
+          <p class="step-desc">Smart AI matching connects buyers and sellers for the best energy deals based on location and price.</p>
+        </div>
+        <div class="step-card animate-fade-in-up delay-300">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="step-num">Step 3</div>
+          <div class="step-title">Verify &amp; Transact</div>
+          <p class="step-desc">Certified green energy certificates guarantee every unit's renewable origin before settlement.</p>
+        </div>
+        <div class="step-card animate-fade-in-up delay-400">
+          <div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg></div>
+          <div class="step-num">Step 4</div>
+          <div class="step-title">Impact &amp; Earn</div>
+          <p class="step-desc">Track your carbon savings in real-time and earn from clean energy generation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORM FEATURES -->
+  <section class="platform-features">
+    <div class="container">
+      <div class="section-center animate-fade-in-up">
+        <h2>Platform <span class="text-gradient">Features</span></h2>
+        <p>Everything you need for a decentralized energy economy</p>
+      </div>
+      <div class="features-cards-grid">
+        <div class="feature-card animate-fade-in-up delay-100">
+          <div class="feature-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h4>Real-Time Trading</h4><p>Buy and sell renewable energy instantly with live marketplace pricing and instant settlement.</p>
+        </div>
+        <div class="feature-card animate-fade-in-up delay-150">
+          <div class="feature-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></div>
+          <h4>Smart Matching</h4><p>AI-powered matching finds the best energy deals based on your location, price and preferences.</p>
+        </div>
+        <div class="feature-card animate-fade-in-up delay-200">
+          <div class="feature-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <h4>Green Certified</h4><p>Every unit of energy is verified and certified for renewable origin via cryptographic tracking.</p>
+        </div>
+        <div class="feature-card animate-fade-in-up delay-100">
+          <div class="feature-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <h4>Impact Analytics</h4><p>Track your environmental impact with detailed carbon savings and energy reports in real-time.</p>
+        </div>
+        <div class="feature-card animate-fade-in-up delay-200">
+          <div class="feature-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <h4>Community Driven</h4><p>Join thousands of producers, consumers, and investors in building a sustainable energy future.</p>
+        </div>
+        <div class="feature-card animate-fade-in-up delay-300">
+          <div class="feature-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <h4>Project Funding</h4><p>Invest in renewable energy projects and earn returns while accelerating the green transition.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN AS ROLE -->
+  <section class="join-role-section">
+    <div class="container">
+      <div class="section-center animate-fade-in-up">
+        <h2>Join as <span class="text-gradient">Your Role</span></h2>
+        <p>Choose how you want to participate in the clean energy revolution</p>
+      </div>
+      <div class="join-roles-grid">
+        <a class="join-role-card animate-fade-in-up delay-100" href="pages/producer.html">
+          <div class="join-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+          <h3>Producer</h3>
+          <p>Sell your surplus renewable energy and earn from clean power generation</p>
+          <span class="join-role-link">Sign up <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+        </a>
+        <a class="join-role-card animate-fade-in-up delay-200" href="pages/consumer.html">
+          <div class="join-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h3>Consumer</h3>
+          <p>Buy verified green energy directly from producers at competitive rates</p>
+          <span class="join-role-link">Sign up <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+        </a>
+        <a class="join-role-card animate-fade-in-up delay-300" href="pages/investor.html">
+          <div class="join-role-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <h3>Investor</h3>
+          <p>Fund renewable projects with transparent ROI and environmental impact</p>
+          <span class="join-role-link">Sign up <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-center animate-fade-in-up">
+        <h2>Trusted by <span class="text-gradient">Thousands</span></h2>
+        <p>Hear from the people powering the green energy revolution</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card animate-fade-in-up delay-100">
+          <div class="stars"><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <p class="testimonial-text">"Renewa helped me sell excess solar energy from my farm. I've earned $12,000 in the past year while reducing emissions."</p>
+          <div class="testimonial-author"><div class="author-avatar">SC</div><div><div class="author-name">Sarah Chen</div><div class="author-role">Solar Producer</div></div></div>
+        </div>
+        <div class="testimonial-card animate-fade-in-up delay-200">
+          <div class="stars"><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <p class="testimonial-text">"Switching to peer-to-peer clean energy cut my electricity costs by 30% and I know exactly where my energy comes from."</p>
+          <div class="testimonial-author"><div class="author-avatar">MJ</div><div><div class="author-name">Marcus Johnson</div><div class="author-role">Green Consumer</div></div></div>
+        </div>
+        <div class="testimonial-card animate-fade-in-up delay-300">
+          <div class="stars"><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><svg class="star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <p class="testimonial-text">"The ROI on renewable projects here outperforms traditional investments. Plus, I'm funding a greener future."</p>
+          <div class="testimonial-author"><div class="author-avatar">AP</div><div><div class="author-name">Dr. Amara Patel</div><div class="author-role">Clean Energy Investor</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-inner animate-fade-in-up">
+        <h2>Ready to Power the <span class="text-gradient">Future?</span></h2>
+        <p>Join thousands of producers, consumers, and investors already trading clean energy on Renewa.</p>
+        <div class="cta-btns">
+          <a class="btn btn-default btn-lg" href="pages/auth.html">Start Trading <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          <a class="btn btn-outline btn-lg" href="pages/marketplace.html">View Marketplace</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="nav-logo-icon" style="width:2rem;height:2rem;border-radius:0.5rem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+            </div>
+            <span class="footer-brand-text">Renewa</span>
+          </div>
+          <p>Peer-to-peer renewable energy trading platform empowering a sustainable future globally.</p>
+        </div>
+        <div class="footer-col"><h4>Platform</h4><ul><li><a href="pages/marketplace.html">Marketplace</a></li><li><a href="#">How it Works</a></li><li><a href="#">Pricing</a></li></ul></div>
+        <div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Documentation</a></li><li><a href="#">API Reference</a></li><li><a href="#">Blog</a></li></ul></div>
+        <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+      </div>
+      <div class="footer-bottom">© 2026 Renewa Inc. All rights reserved.</div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="js/session.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/app.js"></script>
+<script>
+  window.navigate = function(page) {
+    const m = { marketplace:'pages/marketplace.html', auth:'pages/auth.html', producer:'pages/producer.html', consumer:'pages/consumer.html', investor:'pages/investor.html' };
+    if (m[page]) window.location.href = m[page];
+  };
+  document.addEventListener('DOMContentLoaded', () => {
+    injectNavbar('home');
+  });
+  window.addEventListener('load', () => {
+    setTimeout(() => { document.getElementById('barSolar').style.width='45%'; }, 400);
+    setTimeout(() => { document.getElementById('barWind').style.width='35%'; }, 560);
+    setTimeout(() => { document.getElementById('barBiomass').style.width='14%'; }, 720);
+  });
+  // Counter animation
+  function animateCount(el, target, suffix, dur) {
+    let s = 0; const step = target / (dur / 16);
+    const t = setInterval(() => { s = Math.min(s+step, target); el.textContent = Math.floor(s).toLocaleString() + suffix; if (s >= target) clearInterval(t); }, 16);
+  }
+  const obs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      animateCount(document.getElementById('statKwh'), 12800000, '', 2200);
+      animateCount(document.getElementById('statProd'), 2840, '+', 1600);
+      animateCount(document.getElementById('statProj'), 186, '', 1200);
+      obs.disconnect();
+    }
+  }, { threshold: 0.5 });
+  const sb = document.querySelector('.stats-bar');
+  if (sb) obs.observe(sb);
+</script>
+</body>
+</html>

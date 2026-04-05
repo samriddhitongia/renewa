@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>KYC Admin Panel — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+  <link rel="stylesheet" href="../css/layout.css"/>
+  <link rel="stylesheet" href="../css/toast.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css"/>
+  <style>
+    body { background: var(--background); }
+    .admin-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem; }
+    .kyc-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 1rem; margin-bottom: 1.25rem; overflow: hidden; }
+    .kyc-card-header { padding: 1rem 1.25rem; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: .75rem; }
+    .kyc-docs { display: grid; grid-template-columns: repeat(3,1fr); gap: .875rem; padding: 1.1rem 1.25rem; }
+    @media(max-width:600px) { .kyc-docs { grid-template-columns: 1fr; } }
+    .kyc-doc-box { }
+    .kyc-doc-label { font-size:.72rem; font-weight:700; color:var(--muted-fg); margin-bottom:.4rem; text-transform:uppercase; letter-spacing:.04em; }
+    .kyc-doc-img { border-radius:.75rem; border:1.5px solid var(--border); overflow:hidden; background:#0f172a; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+    .kyc-doc-img img { width:100%; height:100%; object-fit:cover; display:block; }
+    .kyc-doc-img .loading { color:#475569; font-size:.8rem; }
+    .badge-pill { display:inline-flex; align-items:center; gap:.3rem; padding:.3rem .75rem; border-radius:999px; font-size:.75rem; font-weight:700; }
+    .btn-verify { background:#16a34a;color:#fff;border:none;padding:.55rem 1.1rem;border-radius:.65rem;font-weight:700;font-size:.82rem;cursor:pointer; }
+    .btn-reject  { background:#dc2626;color:#fff;border:none;padding:.55rem 1.1rem;border-radius:.65rem;font-weight:700;font-size:.82rem;cursor:pointer;margin-left:.5rem; }
+    .btn-verify:hover { background:#15803d; }
+    .btn-reject:hover  { background:#b91c1c; }
+    .empty-state { text-align:center;padding:4rem 2rem;color:var(--muted-fg); }
+    .filter-tabs { display:flex;gap:.5rem;margin-bottom:1.25rem;flex-wrap:wrap; }
+    .filter-tab { padding:.4rem .9rem;border-radius:999px;border:1.5px solid var(--border);background:transparent;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--muted-fg);transition:.15s; }
+    .filter-tab.active { background:var(--primary);color:#fff;border-color:var(--primary); }
+    /* Lightbox */
+    #imgLightbox { display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:99999;align-items:center;justify-content:center; }
+    #imgLightbox img { max-width:90vw;max-height:88vh;border-radius:.75rem;box-shadow:0 8px 40px rgba(0,0,0,.5); }
+    #imgLightbox .close-lb { position:absolute;top:1rem;right:1.25rem;color:#fff;font-size:2rem;cursor:pointer;line-height:1;background:rgba(0,0,0,.5);border:none;border-radius:50%;width:2.5rem;height:2.5rem;display:flex;align-items:center;justify-content:center; }
+  </style>
+</head>
+<body>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Lightbox -->
+<div id="imgLightbox" onclick="closeLightbox()">
+  <button class="close-lb" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="KYC Document"/>
+</div>
+
+<!-- Admin top bar -->
+<div style="background:#1e3a5f;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;">
+  <div style="display:flex;align-items:center;gap:.75rem;">
+    <div style="width:2rem;height:2rem;background:#22c55e;border-radius:.5rem;display:flex;align-items:center;justify-content:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></svg>
+    </div>
+    <span style="color:#fff;font-weight:900;font-size:1rem;">Renewa</span>
+    <span style="background:rgba(255,255,255,.15);color:#93c5fd;font-size:.7rem;font-weight:700;padding:.2rem .6rem;border-radius:999px;letter-spacing:.05em;">KYC ADMIN</span>
+  </div>
+  <button onclick="adminLogout()"
+    style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);color:#fff;
+           padding:.4rem .9rem;border-radius:.6rem;font-size:.8rem;font-weight:700;cursor:pointer;">
+    ↩ Logout
+  </button>
+</div>
+
+<div class="admin-wrap">
+  <div style="margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+    <div>
+      <h1 style="font-size:1.4rem;font-weight:900;margin:0 0 .2rem;">🪪 KYC Review Panel</h1>
+      <p style="color:var(--muted-fg);font-size:.82rem;margin:0;">Review and verify user Aadhaar submissions</p>
+    </div>
+    <button onclick="loadKYCs()" style="padding:.5rem 1rem;border-radius:.65rem;border:1.5px solid var(--border);background:var(--card);font-size:.82rem;font-weight:700;cursor:pointer;">🔄 Refresh</button>
+  </div>
+
+  <!-- Stats -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;">
+    <div class="stat-card"><div class="stat-card-inner"><div><div class="stat-card-label">Total</div><div class="stat-card-value" id="statTotal">—</div></div></div></div>
+    <div class="stat-card"><div class="stat-card-inner"><div><div class="stat-card-label">Pending</div><div class="stat-card-value" id="statPending" style="color:#f59e0b">—</div></div></div></div>
+    <div class="stat-card"><div class="stat-card-inner"><div><div class="stat-card-label">Verified</div><div class="stat-card-value" id="statVerified" style="color:#16a34a">—</div></div></div></div>
+    <div class="stat-card"><div class="stat-card-inner"><div><div class="stat-card-label">Rejected</div><div class="stat-card-value" id="statRejected" style="color:#dc2626">—</div></div></div></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterKYC('all',this)">All</button>
+    <button class="filter-tab" onclick="filterKYC('submitted',this)">🕐 Pending Review</button>
+    <button class="filter-tab" onclick="filterKYC('verified',this)">✅ Verified</button>
+    <button class="filter-tab" onclick="filterKYC('rejected',this)">❌ Rejected</button>
+  </div>
+
+  <div id="kycList"><div class="empty-state">Loading…</div></div>
+</div>
+
+<script src="../js/app.js"></script>
+
+<script>
+// ── Image base — direct static path (no auth needed) ────────────
+const IMG_BASE = 'http://localhost:5000/uploads/kyc/';
+let allKYCs = [];
+
+function adminToken() {
+  return localStorage.getItem('adminToken');
+}
+
+function adminLogout() {
+  localStorage.removeItem('adminToken');
+  window.location.href = 'kyc-admin-login.html';
+}
+
+// ── Guard: redirect to login if no admin token ──────────────────
+async function guardAdmin() {
+  const tok = adminToken();
+  if (!tok) { window.location.href = 'kyc-admin-login.html'; return false; }
+  // Quick verify
+  try {
+    const r = await fetch('http://localhost:5000/api/kyc/admin/list', {
+      headers: { Authorization: 'Bearer ' + tok }
+    });
+    if (!r.ok) { localStorage.removeItem('adminToken'); window.location.href = 'kyc-admin-login.html'; return false; }
+  } catch {
+    window.location.href = 'kyc-admin-login.html'; return false;
+  }
+  return true;
+}
+
+async function loadKYCs() {
+  const tok = adminToken();
+  if (!tok) { window.location.href = 'kyc-admin-login.html'; return; }
+  try {
+    const res = await fetch('http://localhost:5000/api/kyc/admin/list', {
+      headers: { Authorization: 'Bearer ' + tok }
+    });
+    if (!res.ok) { localStorage.removeItem('adminToken'); window.location.href = 'kyc-admin-login.html'; return; }
+    allKYCs = await res.json();
+    document.getElementById('statTotal').textContent   = allKYCs.length;
+    document.getElementById('statPending').textContent  = allKYCs.filter(k=>k.status==='submitted').length;
+    document.getElementById('statVerified').textContent = allKYCs.filter(k=>k.status==='verified').length;
+    document.getElementById('statRejected').textContent = allKYCs.filter(k=>k.status==='rejected').length;
+    renderKYCs(allKYCs);
+  } catch(e) {
+    document.getElementById('kycList').innerHTML = `<div class="empty-state">❌ ${e.message}</div>`;
+  }
+}
+
+function filterKYC(status, btn) {
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  renderKYCs(status === 'all' ? allKYCs : allKYCs.filter(k=>k.status===status));
+}
+
+function renderKYCs(list) {
+  const el = document.getElementById('kycList');
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No submissions found</div>'; return; }
+
+  const sc = {
+    submitted: { label:'Pending Review', color:'#f59e0b', bg:'#fffbeb' },
+    verified:  { label:'Verified ✅',    color:'#16a34a', bg:'#f0fdf4' },
+    rejected:  { label:'Rejected ❌',    color:'#dc2626', bg:'#fef2f2' },
+  };
+
+  el.innerHTML = list.map(k => {
+    const s   = sc[k.status] || sc.submitted;
+    const sub = k.submittedAt ? new Date(k.submittedAt).toLocaleString('en-IN') : '—';
+    const ver = k.verifiedAt  ? new Date(k.verifiedAt).toLocaleString('en-IN')  : '';
+    return `
+    <div class="kyc-card">
+      <div class="kyc-card-header">
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:800;font-size:1rem;margin-bottom:.2rem;">${k.name}</div>
+          <div style="font-size:.78rem;color:var(--muted-fg);">${k.email} &nbsp;·&nbsp; ${k.role} &nbsp;·&nbsp; Aadhaar: <strong>${k.aadhaarNumber||'—'}</strong></div>
+          <div style="font-size:.72rem;color:var(--muted-fg);margin-top:.2rem;">Submitted: ${sub}${ver?'&nbsp;·&nbsp;Verified: '+ver:''}</div>
+          ${k.rejectedReason?`<div style="font-size:.75rem;color:#dc2626;margin-top:.25rem;">Rejection reason: ${k.rejectedReason}</div>`:''}
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;flex-shrink:0;">
+          <span class="badge-pill" style="background:${s.bg};color:${s.color};">${s.label}</span>
+          ${k.status==='submitted' ? `
+            <button class="btn-verify" onclick="approveKYC('${k.id}','${k.name}')">✅ Verify</button>
+            <button class="btn-reject" onclick="rejectKYC('${k.id}')">❌ Reject</button>
+          ` : k.status==='rejected' ? `
+            <button class="btn-verify" onclick="approveKYC('${k.id}','${k.name}')">✅ Verify Now</button>
+          ` : ''}
+        </div>
+      </div>
+      <div class="kyc-docs">
+        ${docBox('Aadhaar Front', k.aadhaarFront)}
+        ${docBox('Aadhaar Back',  k.aadhaarBack)}
+        ${docBox('Live Selfie',   k.selfie)}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function docBox(label, filename) {
+  const url = filename ? IMG_BASE + filename : null;
+  return `
+    <div class="kyc-doc-box">
+      <div class="kyc-doc-label">${label}</div>
+      <div class="kyc-doc-img" ${url ? `onclick="openLightbox('${url}')"` : ''}>
+        ${url
+          ? `<img src="${url}" alt="${label}"
+               onerror="this.parentElement.innerHTML='<span class=loading>⚠️ Image not found</span>'">`
+          : `<span class="loading">No file uploaded</span>`}
+      </div>
+      ${url ? `<a href="${url}" target="_blank" style="font-size:.7rem;color:var(--primary);display:block;margin-top:.3rem;">Open full size ↗</a>` : ''}
+    </div>`;
+}
+
+function openLightbox(url) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('imgLightbox').style.display = 'flex';
+}
+function closeLightbox() {
+  document.getElementById('imgLightbox').style.display = 'none';
+}
+
+async function approveKYC(userId, name) {
+  if (!confirm(`Mark KYC as VERIFIED for ${name}?`)) return;
+  await adminAction(userId, 'verify');
+}
+async function rejectKYC(userId) {
+  const reason = prompt('Rejection reason (shown to user):');
+  if (reason === null) return;
+  await adminAction(userId, 'reject', reason || 'Documents unclear or invalid');
+}
+async function adminAction(userId, action, reason) {
+  const tok = adminToken();
+  try {
+    const res  = await fetch('http://localhost:5000/api/kyc/admin/verify', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', Authorization:'Bearer '+tok },
+      body:   JSON.stringify({ userId, action, reason })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message);
+    showToast(action==='verify' ? '✅ KYC Verified' : '❌ KYC Rejected', data.message);
+    loadKYCs();
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+function showToast(title, msg) {
+  const c = document.getElementById('toastContainer');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = 'toast toast-success';
+  t.innerHTML = `<strong>${title}</strong><br><span style="font-size:.8rem">${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(()=>t.remove(), 4000);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const ok = await guardAdmin();
+  if (ok) loadKYCs();
+  setInterval(loadKYCs, 30000);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketplace — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/toast.css" />
+  <style>
+    .mp-hero{background:linear-gradient(135deg,hsl(152,40%,93%),hsl(210,40%,92%));padding:3rem 0 2rem;border-bottom:1px solid var(--border)}
+    .mp-inner{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem}
+    .mp-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;letter-spacing:-0.04em;margin-bottom:0.35rem}
+    .mp-stats{display:flex;gap:1.5rem}
+    .mp-stat-num{font-family:'Outfit',sans-serif;font-size:1.6rem;font-weight:900;color:var(--primary);letter-spacing:-0.04em}
+    .mp-stat-label{font-size:0.7rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em}
+    .mp-layout{display:grid;grid-template-columns:250px 1fr;gap:1.75rem;padding-block:2rem}
+    @media(max-width:1023px){.mp-layout{grid-template-columns:1fr}}
+    .fp{background:var(--card);border:1.5px solid var(--border);border-radius:1rem;padding:1.5rem;height:fit-content;position:sticky;top:5rem;box-shadow:var(--shadow-sm)}
+    @media(max-width:1023px){.fp{position:static}}
+    .ft{font-size:0.8rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted-fg);margin-bottom:1rem}
+    .fs{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+    .fs:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+    .fst{font-size:0.85rem;font-weight:700;margin-bottom:0.75rem}
+    .fchips{display:flex;flex-wrap:wrap;gap:0.4rem}
+    .fc{padding:0.35rem 0.75rem;border-radius:50rem;border:1.5px solid var(--border);background:var(--card);font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;color:var(--muted-fg)}
+    .fc:hover,.fc.on{border-color:var(--primary);color:var(--primary);background:var(--primary-10)}
+    .pranges{display:flex;gap:0.5rem;align-items:center}
+    .pranges input{flex:1;padding:0.5rem 0.6rem;border:1.5px solid var(--border);border-radius:0.6rem;background:var(--muted);font-size:0.8rem}
+    .pranges input:focus{border-color:var(--primary);outline:none}
+    .fck{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;cursor:pointer;padding:0.25rem 0;transition:color 0.15s}
+    .fck:hover{color:var(--primary)}
+    .fck input{accent-color:var(--primary);width:0.95rem;height:0.95rem}
+    .freset{width:100%;padding:0.6rem;border-radius:0.6rem;border:1.5px solid var(--border);background:transparent;font-size:0.8rem;font-weight:700;color:var(--muted-fg);cursor:pointer;transition:all 0.15s;margin-top:0.5rem}
+    .freset:hover{border-color:var(--primary);color:var(--primary)}
+    .search-row{display:flex;gap:0.75rem;margin-bottom:1.5rem}
+    .srch{flex:1;padding:0.75rem 1rem;border:1.5px solid var(--border);border-radius:0.875rem;background:var(--card);font-size:0.875rem;transition:border-color 0.2s,box-shadow 0.2s}
+    .srch:focus{border-color:var(--primary);outline:none;box-shadow:0 0 0 3px var(--primary-10)}
+    .sbtn{padding:0.75rem 1.25rem;background:var(--primary);color:white;border:none;border-radius:0.875rem;font-weight:700;cursor:pointer;transition:all 0.2s}
+    .sbtn:hover{background:hsl(152,76%,34%)}
+    .lhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:0.75rem}
+    .lcnt{font-size:0.875rem;color:var(--muted-fg);font-weight:600}
+    .ssort{padding:0.5rem 0.875rem;border:1.5px solid var(--border);border-radius:0.6rem;background:var(--card);font-size:0.8rem;font-weight:600;cursor:pointer}
+    .vtgl{display:flex;gap:0.25rem;background:var(--muted);border-radius:0.6rem;padding:0.25rem}
+    .vbtn{width:2rem;height:2rem;border:none;background:transparent;border-radius:0.4rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted-fg);transition:all 0.15s}
+    .vbtn.on{background:var(--card);color:var(--primary);box-shadow:var(--shadow-sm)}
+    .vbtn svg{width:0.95rem;height:0.95rem}
+    .sm-banner{background:linear-gradient(135deg,hsl(152,40%,92%),hsl(210,40%,92%));border:1.5px solid hsla(152,76%,40%,0.25);border-radius:1rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem;box-shadow:var(--shadow-sm)}
+    .sm-icon{width:3rem;height:3rem;border-radius:0.875rem;background:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sm-icon svg{width:1.4rem;height:1.4rem;color:white}
+    .prod-cta{background:var(--foreground);color:white;border-radius:1rem;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+    .pcta-btn{background:var(--primary);color:white;border:none;padding:0.65rem 1.25rem;border-radius:0.75rem;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+    .pcta-btn:hover{background:hsl(152,76%,34%);transform:translateY(-1px)}
+    .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(272px,1fr));gap:1.25rem}
+    .llist{display:flex;flex-direction:column;gap:0.875rem}
+    .lcard{background:var(--card);border:1.5px solid var(--border);border-radius:1rem;overflow:hidden;box-shadow:var(--shadow-sm);transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s}
+    .lcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:hsla(152,76%,40%,0.3)}
+    .limg{height:7rem;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .limg svg{width:5rem;height:5rem;opacity:0.28}
+    .cbadge{position:absolute;top:0.75rem;right:0.75rem;background:var(--primary);color:white;font-size:0.62rem;font-weight:800;padding:0.2rem 0.55rem;border-radius:50rem;letter-spacing:0.05em;display:flex;align-items:center;gap:0.25rem}
+    .abadge{position:absolute;top:0.75rem;left:0.75rem;font-size:0.62rem;font-weight:800;padding:0.2rem 0.55rem;border-radius:50rem}
+    .anow{background:hsla(152,76%,40%,0.15);color:hsl(152,76%,32%)}
+    .asched{background:hsla(45,93%,47%,0.15);color:hsl(45,80%,32%)}
+    .lbody{padding:1.125rem}
+    .srow{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.65rem}
+    .sav{width:1.75rem;height:1.75rem;border-radius:50%;background:var(--primary-10);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:var(--primary);flex-shrink:0}
+    .sname{font-size:0.78rem;font-weight:700}
+    .sloc{font-size:0.68rem;color:var(--muted-fg);display:flex;align-items:center;gap:0.2rem}
+    .sloc svg{width:0.65rem;height:0.65rem}
+    .ltags{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.875rem}
+    .tag{display:flex;align-items:center;gap:0.25rem;padding:0.2rem 0.55rem;border-radius:50rem;font-size:0.7rem;font-weight:700}
+    .ts{background:var(--yellow-10);color:var(--yellow-500)}
+    .tw{background:var(--blue-10);color:var(--secondary)}
+    .tb{background:var(--primary-10);color:var(--primary)}
+    .prow{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0.875rem}
+    .pbig{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:-0.04em}
+    .punit{font-size:0.75rem;font-weight:500;color:var(--muted-fg)}
+    .kavail{font-size:0.78rem;font-weight:700;color:var(--muted-fg)}
+    .co2r{display:flex;align-items:center;gap:0.35rem;background:var(--primary-10);border-radius:0.5rem;padding:0.35rem 0.65rem;font-size:0.72rem;font-weight:700;color:var(--primary);margin-bottom:0.875rem}
+    .co2r svg{width:0.85rem;height:0.85rem}
+    .cactions{display:flex;gap:0.5rem}
+    .buybtn{flex:1;padding:0.65rem;border-radius:0.75rem;background:var(--primary);color:white;border:none;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all 0.22s;display:flex;align-items:center;justify-content:center;gap:0.4rem;box-shadow:var(--shadow-primary)}
+    .buybtn:hover{background:hsl(152,76%,34%);transform:translateY(-1px)}
+    .wbtn{width:2.5rem;height:2.5rem;border-radius:0.75rem;border:1.5px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted-fg);transition:all 0.15s}
+    .wbtn:hover{border-color:hsl(0,72%,55%);color:hsl(0,72%,55%)}
+    .wbtn svg{width:1rem;height:1rem}
+    .lcard.lv{display:flex}
+    .lcard.lv .limg{width:8rem;min-width:8rem;height:auto;flex-shrink:0}
+    .lcard.lv .lbody{flex:1;display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center}
+    .lcard.lv .lside{display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0}
+    .empty{text-align:center;padding:4rem 2rem;grid-column:1/-1}
+    .empty-ico{font-size:3rem;margin-bottom:1rem}
+    .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;padding:1rem}
+    .modal-ov.open{display:flex}
+    .mbox{background:var(--card);border-radius:1.25rem;padding:2rem;max-width:480px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.25);animation:fadeInUp 0.25s ease;max-height:90vh;overflow-y:auto}
+    .mtitle{font-size:1.2rem;font-weight:800;margin-bottom:0.25rem}
+    .msub{font-size:0.82rem;color:var(--muted-fg);margin-bottom:1.5rem}
+    .mrow{display:flex;justify-content:space-between;align-items:center;padding:0.625rem 0;border-bottom:1px solid var(--border);font-size:0.875rem}
+    .mrow:last-of-type{border-bottom:none}
+    .mlab{font-weight:600;color:var(--muted-fg)}
+    .mtot{font-size:1.25rem;font-weight:900;color:var(--primary)}
+    .co2prev{background:var(--primary-10);border:1.5px solid var(--primary-20);border-radius:0.875rem;padding:1rem;margin:1.25rem 0;display:flex;align-items:center;gap:0.75rem}
+    .co2ico{width:2.5rem;height:2.5rem;background:var(--primary);border-radius:0.6rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .co2ico svg{width:1.2rem;height:1.2rem;color:white}
+    .qctrl{display:flex;align-items:center;gap:0.75rem;margin:1.25rem 0}
+    .qbtn{width:2.25rem;height:2.25rem;border-radius:50%;border:1.5px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;transition:all 0.15s}
+    .qbtn:hover{border-color:var(--primary);color:var(--primary)}
+    .qval{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;min-width:3rem;text-align:center}
+    .mbtns{display:flex;gap:0.75rem;margin-top:1.25rem}
+    .mcancel{flex:1;padding:0.75rem;border:1.5px solid var(--border);border-radius:0.75rem;background:transparent;font-weight:700;cursor:pointer;transition:all 0.15s}
+    .mconfirm{flex:2;padding:0.75rem;border:none;border-radius:0.75rem;background:var(--primary);color:white;font-weight:700;cursor:pointer;transition:all 0.22s;display:flex;align-items:center;justify-content:center;gap:0.5rem}
+    .mconfirm:hover{background:hsl(152,76%,34%)}
+    .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    @media(max-width:480px){.form-row2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="navbar" role="banner"></header>
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<!-- Purchase Modal -->
+<div class="modal-ov" id="buyMod">
+  <div class="mbox">
+    <h3 class="mtitle" id="bTitle">Purchase Energy</h3>
+    <p class="msub" id="bSeller">From producer</p>
+    <div class="qctrl">
+      <button class="qbtn" onclick="chQ(-50)">−</button>
+      <div class="qval" id="qv">100</div>
+      <button class="qbtn" onclick="chQ(50)">+</button>
+      <span style="font-size:0.82rem;color:var(--muted-fg);font-weight:600">kWh</span>
+    </div>
+    <div class="co2prev">
+      <div class="co2ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg></div>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.07em">CO₂ Savings Preview</div>
+        <div style="font-size:1rem;font-weight:800;color:var(--primary)" id="bCo2">~73 kg prevented</div>
+        <div style="font-size:0.72rem;color:var(--muted-fg)">vs equivalent conventional energy</div>
+      </div>
+    </div>
+    <div class="mrow"><span class="mlab">Price/kWh</span><span id="bPpk" style="font-weight:700">₹0.11</span></div>
+    <div class="mrow"><span class="mlab">Quantity</span><span id="bQl" style="font-weight:700">100 kWh</span></div>
+    <div class="mrow"><span class="mlab">Certificate</span><span><span class="badge badge-emerald">✓ Included</span></span></div>
+    <div class="mrow" style="border-top:2px solid var(--border);margin-top:0.5rem;padding-top:0.75rem"><span style="font-weight:800">Total</span><span class="mtot" id="bTot">₹11.00</span></div>
+    <div class="mrow" style="background:var(--muted);border-radius:0.5rem;padding:0.5rem 0.75rem;margin-top:0.25rem"><span class="mlab" style="color:var(--muted-fg)">Your Wallet</span><span id="bWalletBal" style="font-weight:800;color:var(--primary)">₹1000.00</span></div>
+    <div class="mbtns">
+      <button class="mcancel" onclick="closeBuy()">Cancel</button>
+      <button class="mconfirm" onclick="confirmBuy()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Confirm Purchase</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Listing Modal -->
+<div class="modal-ov" id="addMod">
+  <div class="mbox" style="max-width:520px">
+    <h3 class="mtitle">Add New Listing</h3>
+    <p class="msub">List your renewable energy on the marketplace</p>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Energy Type</label><select class="form-control" id="nT"><option>Solar</option><option>Wind</option><option>Biomass</option></select></div>
+      <div class="form-group"><label class="form-label">Available (kWh)</label><input class="form-control" type="number" id="nK" placeholder="500" /></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Price/kWh ($)</label><input class="form-control" type="number" id="nP" placeholder="0.12" step="0.01" /></div>
+      <div class="form-group"><label class="form-label">Location</label><input class="form-control" type="text" id="nL" placeholder="City, ST" /></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label class="form-label">Availability</label><select class="form-control" id="nAv"><option>Available Now</option><option>Scheduled</option><option>24/7</option></select></div>
+      <div class="form-group"><label class="form-label">Certification</label><select class="form-control" id="nC"><option>REC Certified</option><option>ISO 50001</option><option>Green-e</option></select></div>
+    </div>
+    <div class="form-group"><label class="form-label">Description</label><input class="form-control" type="text" id="nD" placeholder="e.g. Rooftop solar array, peak 80 kW" /></div>
+    <div class="form-group"><label class="form-label">Listing Image <span style="color:var(--muted-fg);font-weight:400">(optional)</span></label><input class="form-control" type="file" id="nImg" accept="image/*" style="padding:0.4rem 0.75rem;cursor:pointer" /></div>
+    <div class="mbtns">
+      <button class="mcancel" onclick="document.getElementById('addMod').classList.remove('open')">Cancel</button>
+      <button class="mconfirm" onclick="submitL()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Post Listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cart FAB — only consumers see this -->
+<div id="cartFab" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:200;display:none">
+  <button onclick="showToast('Cart','Your cart feature coming soon!')" title="Cart" style="position:relative;width:3.5rem;height:3.5rem;border-radius:50%;background:var(--foreground);color:white;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.25);transition:transform 0.2s">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="22" height="22"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+    <div id="cartN" style="position:absolute;top:-0.25rem;right:-0.25rem;width:1.25rem;height:1.25rem;border-radius:50%;background:var(--primary);color:white;font-size:0.65rem;font-weight:800;display:flex;align-items:center;justify-content:center">0</div>
+  </button>
+</div>
+
+<main role="main">
+  <div class="mp-hero">
+    <div class="container">
+      <div class="mp-inner">
+        <div>
+          <div class="hero-badge" style="margin-bottom:0.75rem"><span class="hero-badge-dot"></span> Live · updated every 30s</div>
+          <h1 class="mp-title">Energy <span class="text-gradient">Marketplace</span></h1>
+          <p style="color:var(--muted-fg);font-size:0.9rem">Buy, sell and trade certified renewable energy directly.</p>
+        </div>
+        <div class="mp-stats">
+          <div><div class="mp-stat-num" id="lc">24</div><div class="mp-stat-label">Listings</div></div>
+          <div><div class="mp-stat-num">$0.09</div><div class="mp-stat-label">Lowest Price</div></div>
+          <div><div class="mp-stat-num">8</div><div class="mp-stat-label">Locations</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="mp-layout">
+      <!-- Filters -->
+      <aside class="fp">
+        <div class="ft">Filters</div>
+        <div class="fs">
+          <div class="fst">Energy Type</div>
+          <div class="fchips">
+            <div class="fc on" data-t="all" onclick="sT('all',this)">All</div>
+            <div class="fc" data-t="Solar" onclick="sT('Solar',this)">☀️ Solar</div>
+            <div class="fc" data-t="Wind" onclick="sT('Wind',this)">💨 Wind</div>
+            <div class="fc" data-t="Biomass" onclick="sT('Biomass',this)">🌿 Biomass</div>
+          </div>
+        </div>
+        <div class="fs">
+          <div class="fst">Price ($/kWh)</div>
+          <div class="pranges">
+            <input type="number" id="pMn" value="0" step="0.01" placeholder="Min" oninput="go()" />
+            <span style="color:var(--muted-fg);font-size:0.75rem">—</span>
+            <input type="number" id="pMx" value="1" step="0.01" placeholder="Max" oninput="go()" />
+          </div>
+        </div>
+        <div class="fs">
+          <div class="fst">Location</div>
+          <div class="fchips" id="locs"><div class="fc on" data-l="all" onclick="sL('all',this)">All</div></div>
+        </div>
+        <div class="fs">
+          <div class="fst">Availability</div>
+          <label class="fck"><input type="checkbox" id="fN" checked onchange="go()" /> Available Now</label>
+          <label class="fck"><input type="checkbox" id="fS" checked onchange="go()" /> Scheduled</label>
+          <label class="fck"><input type="checkbox" id="f7" checked onchange="go()" /> 24/7</label>
+        </div>
+        <div class="fs">
+          <div class="fst">Options</div>
+          <label class="fck"><input type="checkbox" id="fCt" onchange="go()" /> Certified Only</label>
+        </div>
+        <button class="freset" onclick="reset()">Reset Filters</button>
+      </aside>
+
+      <div>
+        <div class="search-row">
+          <input type="text" class="srch" id="sq" placeholder="Search by seller, type, location..." oninput="go()" />
+          <button class="sbtn" onclick="go()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+        </div>
+
+        <!-- Smart Match Banner -->
+        <div class="sm-banner" id="smb">
+          <div class="sm-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div style="flex:1">
+            <div style="font-size:0.68rem;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.2rem">⚡ Smart Match</div>
+            <div style="font-size:0.875rem;font-weight:700" id="smTxt">Computing best match...</div>
+            <div style="font-size:0.72rem;color:var(--muted-fg)">Matched on price, availability &amp; rating</div>
+          </div>
+          <button class="btn btn-default btn-sm btn-rounded" id="smBtn">Buy Match</button>
+        </div>
+
+        <!-- Producer CTA -->
+        <div id="pCta" style="display:none" class="prod-cta">
+          <div>
+            <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem">You're a Producer</div>
+            <div style="font-size:1rem;font-weight:800">List your energy and start earning today</div>
+          </div>
+          <button class="pcta-btn" onclick="document.getElementById('addMod').classList.add('open')">+ Add Listing</button>
+        </div>
+
+        <!-- Producer info notice -->
+        <div id="prodNotice" style="display:none;background:var(--muted);border:1.5px solid var(--border);border-radius:0.875rem;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.75rem">
+          <span style="font-size:1.2rem">ℹ️</span>
+          <div style="font-size:0.82rem;color:var(--muted-fg)">You're viewing the marketplace as a <strong>Producer</strong>. You can browse listings but only consumers can purchase energy. Use the button above to add your own listings.</div>
+        </div>
+
+        <div class="lhdr">
+          <div class="lcnt" id="lcnt">Loading...</div>
+          <div style="display:flex;gap:0.5rem;align-items:center">
+            <select class="ssort" id="ss" onchange="go()">
+              <option value="smart">Smart Match</option>
+              <option value="pa">Price: Low→High</option>
+              <option value="pd">Price: High→Low</option>
+              <option value="kd">Most Energy</option>
+              <option value="rt">Top Rated</option>
+            </select>
+            <div class="vtgl">
+              <button class="vbtn on" id="gbtn" onclick="sv('g')" title="Grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+              <button class="vbtn" id="lbtn" onclick="sv('l')" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div id="lg" class="lgrid"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/razorpay.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/app.js"></script>
+<script>
+/* ── constants ───────────────────────────────────────────────── */
+const API     = 'http://localhost:5000/api';
+const c2      = {Solar:0.8, Wind:0.6, Biomass:0.5};
+const bg      = {Solar:'linear-gradient(135deg,hsl(35,60%,92%),hsl(45,70%,88%))',Wind:'linear-gradient(135deg,hsl(210,50%,92%),hsl(200,60%,88%))',Biomass:'linear-gradient(135deg,hsl(150,40%,90%),hsl(160,50%,86%))'};
+const ico     = {Solar:`<svg viewBox="0 0 24 24" fill="none" stroke="hsl(45,93%,47%)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,Wind:`<svg viewBox="0 0 24 24" fill="none" stroke="hsl(213,93%,55%)" stroke-width="1.5" stroke-linecap="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>`,Biomass:`<svg viewBox="0 0 24 24" fill="none" stroke="hsl(152,76%,40%)" stroke-width="1.5" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg>`};
+const tc      = {Solar:'ts', Wind:'tw', Biomass:'tb'};
+const em      = {Solar:'☀️', Wind:'💨', Biomass:'🌿'};
+
+/* ── state ───────────────────────────────────────────────────── */
+let DB=[],  aT='all', aL='all', vw='g', crt=0, bL=null, bQ=100;
+
+/* ── API fetch helper ────────────────────────────────────────── */
+function getToken() { return Session.get()?.token || null; }
+async function apiFetch(url, opts={}) {
+  const headers = { 'Content-Type':'application/json' };
+  const t = getToken(); if (t) headers['Authorization'] = 'Bearer '+t;
+  const res = await fetch(API+url, {...opts, headers});
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.message||'Request failed'); }
+  return res.json();
+}
+
+/* ── LOAD LISTINGS FROM BACKEND ──────────────────────────────── */
+async function loadListings() {
+  const lg = document.getElementById('lg');
+  lg.innerHTML = '<div class="empty"><div class="empty-ico">⏳</div><p>Loading listings from server…</p></div>';
+  try {
+    DB = await apiFetch('/listings');
+    // Normalise: add default rating if not in DB so sort never crashes
+    DB = DB.map(l => ({ ...l, rating: l.rating ?? 4.5 }));
+    document.getElementById('lc').textContent = DB.length;
+    buildLocs();
+    go();
+  } catch(err) {
+    console.error(err);
+    lg.innerHTML = `<div class="empty"><div class="empty-ico">⚠️</div><h3>Could not load listings</h3><p style="color:var(--muted-fg);font-size:0.85rem">Make sure the backend is running:<br><code style="background:var(--muted);padding:0.2rem 0.5rem;border-radius:4px">cd backend && node server.js</code></p></div>`;
+  }
+}
+
+/* ── init ────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  injectNavbar('marketplace');
+  const u = Session.get();
+  if (u && u.role === 'producer') {
+    document.getElementById('pCta').style.display = 'flex';
+    const notice = document.getElementById('prodNotice');
+    if (notice) notice.style.display = 'flex';
+    // Hide buy modal
+    document.getElementById('buyMod').style.display = 'none';
+  } else {
+    // Show cart for consumers/investors
+    document.getElementById('cartFab').style.display = 'block';
+  }
+  loadListings();
+});
+
+/* ── location chips ──────────────────────────────────────────── */
+function buildLocs() {
+  const ls  = [...new Set(DB.map(l => l.loc.split(',')[1]?.trim() || l.loc))];
+  const box = document.getElementById('locs');
+  box.querySelectorAll('[data-l]:not([data-l="all"])').forEach(e => e.remove());
+  ls.forEach(l => {
+    const e = document.createElement('div');
+    e.className='fc'; e.dataset.l=l; e.textContent=l;
+    e.onclick = () => sL(l, e);
+    box.appendChild(e);
+  });
+}
+
+/* ── filter/sort/render ──────────────────────────────────────── */
+function sT(t,el){aT=t;document.querySelectorAll('[data-t]').forEach(c=>c.classList.toggle('on',c.dataset.t===t));go();}
+function sL(l,el){aL=l;document.querySelectorAll('[data-l]').forEach(c=>c.classList.toggle('on',c.dataset.l===l));go();}
+function sv(v){vw=v;document.getElementById('gbtn').classList.toggle('on',v==='g');document.getElementById('lbtn').classList.toggle('on',v==='l');go();}
+function reset(){
+  aT='all';aL='all';
+  document.querySelectorAll('[data-t]').forEach(c=>c.classList.toggle('on',c.dataset.t==='all'));
+  document.querySelectorAll('[data-l]').forEach(c=>c.classList.toggle('on',c.dataset.l==='all'));
+  ['pMn','pMx','sq'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=id==='pMx'?1:0;});
+  ['fN','fS','f7'].forEach(id=>{const el=document.getElementById(id);if(el)el.checked=true;});
+  const fCt=document.getElementById('fCt');if(fCt)fCt.checked=false;
+  go();
+}
+function getF(){
+  const q  = document.getElementById('sq').value.toLowerCase();
+  const mn = parseFloat(document.getElementById('pMn').value||0);
+  const mx = parseFloat(document.getElementById('pMx').value||999);
+  const fN = document.getElementById('fN').checked;
+  const fS = document.getElementById('fS').checked;
+  const f7 = document.getElementById('f7').checked;
+  const fCt= document.getElementById('fCt').checked;
+  const s  = document.getElementById('ss').value;
+  let list = DB.filter(l=>{
+    if (aT!=='all'&&l.type!==aT)            return false;
+    if (aL!=='all'&&!l.loc.includes(aL))    return false;
+    if (l.price<mn||l.price>mx)             return false;
+    if (!fN&&l.avail==='Available Now')     return false;
+    if (!fS&&l.avail==='Scheduled')         return false;
+    if (!f7&&l.avail==='24/7')              return false;
+    if (fCt&&!l.cert)                       return false;
+    if (q&&!`${l.seller} ${l.type} ${l.loc} ${l.desc}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if (s==='smart') list.sort((a,b)=>(b.avail==='Available Now'?3:b.avail==='24/7'?2:1)*(1/b.price)*b.rating-(a.avail==='Available Now'?3:a.avail==='24/7'?2:1)*(1/a.price)*a.rating);
+  else if(s==='pa') list.sort((a,b)=>a.price-b.price);
+  else if(s==='pd') list.sort((a,b)=>b.price-a.price);
+  else if(s==='kd') list.sort((a,b)=>b.kwh-a.kwh);
+  else if(s==='rt') list.sort((a,b)=>b.rating-a.rating);
+  return list;
+}
+function go(){
+  if (!DB.length) return;
+  const list = getF();
+  const u    = Session.get();
+  const isProd = u && u.role==='producer';
+  document.getElementById('lcnt').textContent = `Showing ${list.length} listing${list.length!==1?'s':''}`;
+  document.getElementById('lc').textContent   = DB.length;
+
+  // Smart match banner — only for consumers/investors, hidden for producers
+  if (!isProd) {
+    const av = list.filter(l=>l.avail!=='Scheduled');
+    if (av.length) {
+      const best = [...av].sort((a,b)=>(b.avail==='Available Now'?2:1)*(1/b.price)*b.rating-(a.avail==='Available Now'?2:1)*(1/a.price)*a.rating)[0];
+      document.getElementById('smb').style.display='flex';
+      document.getElementById('smTxt').textContent=`Best match: ${best.seller} — ${best.type} · ₹${best.price.toFixed(3)}/kWh · ${best.avail}`;
+      document.getElementById('smBtn').onclick=()=>openB(best);
+    } else document.getElementById('smb').style.display='none';
+  } else {
+    document.getElementById('smb').style.display='none';
+  }
+
+  const g = document.getElementById('lg');
+  g.className = vw==='g'?'lgrid':'llist';
+  if (!list.length) { g.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><h3>No listings found</h3><p>Try adjusting your filters.</p></div>`; return; }
+
+  g.innerHTML = list.map(l => {
+    const co2  = Math.round(100*c2[l.type]);
+    const av2  = l.avail==='Available Now'||l.avail==='24/7'?'anow':'asched';
+    const avt  = l.avail==='Available Now'?'● Now':l.avail==='24/7'?'● 24/7':'⏰ Sched.';
+    // Use MongoDB _id for lookup
+    const lid  = l._id;
+    const init = l.sellerInit || (l.seller||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const buyB = isProd
+      ? '' /* producers see no buy button — only their listing info */
+      : `<button class="buybtn" onclick="openB('${lid}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>Buy Now</button>`;
+
+    const imgHtml = l.image ? `<img src="${API.replace('/api','')}/uploads/${l.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'">` : '';
+    if (vw==='l') return `<div class="lcard lv"><div class="limg" style="background:${bg[l.type]}">${imgHtml}${ico[l.type]}<span class="abadge ${av2}">${avt}</span></div><div class="lbody"><div><div class="srow"><div class="sav">${init}</div><div><div class="sname">${l.seller}</div><div class="sloc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${l.loc}</div></div></div><div class="ltags"><span class="tag ${tc[l.type]}">${em[l.type]} ${l.type}</span><span class="tag" style="background:var(--muted);color:var(--muted-fg)">${l.cert}</span><span class="tag" style="background:var(--muted);color:var(--muted-fg)">⭐${l.rating}</span></div><div style="font-size:0.8rem;color:var(--muted-fg)">${l.desc}</div></div><div class="lside"><div style="text-align:right"><div class="pbig">₹${l.price.toFixed(3)}<span class="punit">/kWh</span></div><div class="kavail">${l.kwh.toLocaleString()} kWh</div></div><div class="co2r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg>~${co2}g CO₂/100kWh</div>${buyB}</div></div></div>`;
+
+    return `<div class="lcard"><div class="limg" style="background:${bg[l.type]}">${imgHtml}${ico[l.type]}<span class="cbadge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="10" height="10"><polyline points="20 6 9 17 4 12"/></svg>${(l.cert||'').split(' ')[0]}</span><span class="abadge ${av2}">${avt}</span></div><div class="lbody"><div class="srow"><div class="sav">${init}</div><div><div class="sname">${l.seller}</div><div class="sloc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>${l.loc}</div></div></div><div class="ltags"><span class="tag ${tc[l.type]}">${em[l.type]} ${l.type}</span><span class="tag" style="background:var(--muted);color:var(--muted-fg)">⭐${l.rating}</span></div><div class="prow"><div class="pbig">₹${l.price.toFixed(3)}<span class="punit">/kWh</span></div><div class="kavail">${l.kwh.toLocaleString()} kWh</div></div><div class="co2r"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg>~${co2}g CO₂ saved per 100 kWh</div><div class="cactions">${buyB}${!isProd?`<button class="wbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>`:''}</div></div></div>`;
+  }).join('');
+}
+
+/* ── Buy modal ───────────────────────────────────────────────── */
+function openB(idOrObj) {
+  const u = Session.get();
+  if (!u) { showToast('Sign in required','Please sign in to purchase energy.'); setTimeout(()=>window.location.href='auth.html',1200); return; }
+  // Accept either a mongo _id string or a listing object (for smart-match button)
+  bL = (typeof idOrObj==='string') ? DB.find(x=>x._id===idOrObj) : idOrObj;
+  if (!bL) return;
+  bQ = Math.min(100, bL.kwh);
+  document.getElementById('bTitle').textContent  = `Purchase ${bL.type} Energy`;
+  document.getElementById('bSeller').textContent = `From ${bL.seller} · ${bL.loc}`;
+  updB();
+  document.getElementById('buyMod').classList.add('open');
+}
+function closeBuy(){ document.getElementById('buyMod').classList.remove('open'); bL=null; }
+function chQ(d){ if(!bL)return; bQ=Math.max(50,Math.min(bL.kwh,bQ+d)); updB(); }
+function updB(){
+  if (!bL) return;
+  const t = (bQ*bL.price).toFixed(2);
+  const co2 = Math.round(bQ*c2[bL.type]);
+  const walBal = Session.get()?.walletBalance ?? 0;
+  document.getElementById('qv').textContent   = bQ;
+  document.getElementById('bPpk').textContent = `₹${bL.price.toFixed(3)}`;
+  document.getElementById('bQl').textContent  = `${bQ} kWh`;
+  document.getElementById('bTot').textContent = `₹${t}`;
+  document.getElementById('bCo2').textContent = `~${co2} kg CO₂ prevented`;
+  const walEl = document.getElementById('bWalletBal');
+  if (walEl) walEl.textContent = `₹${Number(walBal).toFixed(2)}`;
+}
+async function confirmBuy(){
+  if (!bL) return;
+  const listing = bL; // snapshot before closeBuy() nulls it
+  const qty = bQ;
+  const btn = document.querySelector('#buyMod .mconfirm');
+  btn.disabled=true; btn.textContent='Processing…';
+  try {
+    const t = getToken();
+    if (!t) { showToast('Sign in required','Please sign in first.'); return; }
+    const res = await fetch(API+`/listings/${listing._id}/purchase`, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer '+t },
+      body: JSON.stringify({ kwh: qty })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message||'Purchase failed');
+    // Update session wallet with real server value
+    const newBal = data.remainingWallet;
+    if (newBal !== undefined) Session.set({ walletBalance: newBal });
+    crt++;
+    document.getElementById('cartN').textContent = crt;
+    closeBuy();
+    showToast('🎉 Purchase Confirmed!', `${qty} kWh · ₹${(qty*listing.price).toFixed(2)} · Wallet: ₹${Number(newBal||0).toFixed(2)}`);
+    await loadListings(); // refresh from server
+  } catch(err) {
+    showToast('Purchase failed', err.message||'Please try again.');
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Confirm Purchase';
+  }
+}
+
+/* ── Add Listing (producer) ──────────────────────────────────── */
+async function submitL(){
+  try {
+    const t = getToken();
+    if (!t) { showToast('Sign in required','Please sign in first.'); return; }
+
+    const formData = new FormData();
+    formData.append('type',  document.getElementById('nT').value);
+    formData.append('kwh',   parseInt(document.getElementById('nK').value)||500);
+    formData.append('price', parseFloat(document.getElementById('nP').value)||0.12);
+    formData.append('loc',   document.getElementById('nL').value||'Your City, ST');
+    formData.append('avail', document.getElementById('nAv').value);
+    formData.append('cert',  document.getElementById('nC').value);
+    formData.append('desc',  document.getElementById('nD').value||'');
+
+    const imgEl = document.getElementById('nImg');
+    if (imgEl && imgEl.files && imgEl.files[0]) {
+      formData.append('image', imgEl.files[0]);
+    }
+
+    const res = await fetch(API+'/listings', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer '+t }, // NO Content-Type — browser sets it with boundary
+      body: formData
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message||'Could not create listing');
+
+    document.getElementById('addMod').classList.remove('open');
+    document.getElementById('nImg').value = ''; // reset file input
+    showToast('Listing Live! 🎉','Your energy is now on the marketplace');
+    await loadListings();
+  } catch(err) {
+    showToast('Error', err.message||'Could not create listing');
+  }
+}
+
+function editListing(id){ showToast('Edit listing','Edit feature coming soon!'); }
+</script>
+</body>
+</html>

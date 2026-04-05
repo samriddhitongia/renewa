@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+  <link rel="stylesheet" href="../css/layout.css"/>
+  <link rel="stylesheet" href="../css/toast.css"/>
+  <style>
+    body { background: var(--background); }
+    .auth-wrap {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+    @media(max-width:860px) {
+      .auth-wrap { grid-template-columns: 1fr; }
+      .auth-panel-left { display: none; }
+    }
+    .auth-panel-left {
+      background: linear-gradient(160deg, hsl(152,76%,20%) 0%, hsl(152,76%,35%) 50%, hsl(200,60%,40%) 100%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 3rem; position: relative; overflow: hidden;
+    }
+    .auth-panel-left::before {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    .auth-left-content { position: relative; z-index: 1; text-align: center; color: white; max-width: 380px; }
+    .auth-left-logo { display: flex; align-items: center; gap: 0.75rem; justify-content: center; margin-bottom: 3rem; }
+    .auth-left-logo-icon {
+      width: 3rem; height: 3rem; background: rgba(255,255,255,0.2);
+      border-radius: 0.875rem; display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    .auth-left-logo-icon svg { width: 1.5rem; height: 1.5rem; color: white; }
+    .auth-left-logo-text { font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 900; color: white; }
+    .auth-left-title { font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 900; line-height: 1.2; margin-bottom: 1rem; }
+    .auth-left-sub { font-size: 0.95rem; opacity: 0.8; line-height: 1.6; margin-bottom: 2.5rem; }
+    .auth-roles-preview { display: flex; flex-direction: column; gap: 0.875rem; width: 100%; }
+    .auth-role-pill {
+      display: flex; align-items: center; gap: 1rem;
+      background: rgba(255,255,255,0.12); border-radius: 1rem;
+      padding: 0.875rem 1.25rem; backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2); text-align: left;
+    }
+    .auth-role-pill-icon {
+      width: 2.5rem; height: 2.5rem; border-radius: 0.75rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .auth-role-pill-icon svg { width: 1.2rem; height: 1.2rem; color: white; }
+    .auth-role-pill-name { font-weight: 800; font-size: 0.9rem; }
+    .auth-role-pill-desc { font-size: 0.75rem; opacity: 0.75; margin-top: 0.1rem; }
+    .auth-panel-right {
+      display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1.5rem; background: var(--background); overflow-y: auto;
+    }
+    .auth-card { width: 100%; max-width: 26rem; animation: fadeInUp 0.45s cubic-bezier(.4,0,.2,1) both; }
+    .auth-card-header { text-align: center; margin-bottom: 1.75rem; }
+    .auth-card-logo { display: none; }
+    @media(max-width:860px) {
+      .auth-card-logo { display: flex; align-items: center; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+      .auth-card-logo-icon {
+        width: 2.5rem; height: 2.5rem; background: var(--primary); border-radius: 0.75rem;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .auth-card-logo-icon svg { width: 1.2rem; height: 1.2rem; color: white; }
+      .auth-card-logo-text { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 900; }
+    }
+    .auth-card-title { font-family: 'Outfit', sans-serif; font-size: 1.65rem; font-weight: 900; margin-bottom: 0.3rem; }
+    .auth-card-sub { font-size: 0.875rem; color: var(--muted-fg); }
+    .auth-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      background: var(--muted); border-radius: 0.875rem; padding: 0.3rem; gap: 0.25rem;
+      margin-bottom: 1.75rem;
+    }
+    .auth-tab-btn {
+      padding: 0.625rem; border: none; border-radius: 0.65rem; background: transparent;
+      font-size: 0.875rem; font-weight: 700; color: var(--muted-fg); cursor: pointer;
+      transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .auth-tab-btn.active { background: var(--card); color: var(--foreground); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; animation: fadeIn 0.2s ease; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label-sm { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--foreground); }
+    .form-input {
+      width: 100%; padding: 0.7rem 0.9rem;
+      border: 1.5px solid var(--border); border-radius: 0.75rem;
+      background: var(--card); font-size: 0.875rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit; color: var(--foreground); box-sizing: border-box;
+    }
+    .form-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-10); }
+    .role-label { font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 0.6rem; }
+    .role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.25rem; }
+    .role-item input { display: none; }
+    .role-item label {
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      padding: 0.875rem 0.5rem; border-radius: 0.875rem;
+      border: 2px solid var(--border); background: var(--muted);
+      cursor: pointer; font-size: 0.72rem; font-weight: 700;
+      color: var(--muted-fg); transition: all 0.18s; text-align: center;
+    }
+    .role-item label:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-10); }
+    .role-icon {
+      width: 2.25rem; height: 2.25rem; border-radius: 0.6rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s; background: rgba(0,0,0,0.06);
+    }
+    .role-icon svg { width: 1.1rem; height: 1.1rem; }
+    .role-item input:checked + label { border-color: var(--primary); background: var(--primary-10); color: var(--primary); }
+    .role-item input:checked + label .role-icon { background: var(--primary); }
+    .role-item input:checked + label .role-icon svg { color: white; }
+    #lProducer:checked + label, #rProducer:checked + label { border-color: hsl(38,92%,50%); background: hsl(38,92%,96%); color: hsl(38,80%,35%); }
+    #lProducer:checked + label .role-icon, #rProducer:checked + label .role-icon { background: hsl(38,92%,50%); }
+    #lProducer:checked + label .role-icon svg, #rProducer:checked + label .role-icon svg { color: white; }
+    #lInvestor:checked + label, #rInvestor:checked + label { border-color: hsl(213,93%,55%); background: hsl(213,93%,96%); color: hsl(213,70%,40%); }
+    #lInvestor:checked + label .role-icon, #rInvestor:checked + label .role-icon { background: hsl(213,93%,55%); }
+    #lInvestor:checked + label .role-icon svg, #rInvestor:checked + label .role-icon svg { color: white; }
+    .auth-submit-btn {
+      width: 100%; height: 2.875rem; border-radius: 0.875rem;
+      background: var(--primary); color: white; border: none;
+      font-size: 0.95rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; box-shadow: 0 4px 14px -2px hsla(152,76%,40%,0.4);
+      font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 0.25rem;
+    }
+    .auth-submit-btn:hover { background: hsl(152,76%,34%); transform: translateY(-1px); }
+    .demo-divider { display: flex; align-items: center; gap: 0.75rem; margin: 1.25rem 0 1rem; }
+    .demo-divider-line { flex: 1; height: 1px; background: var(--border); }
+    .demo-divider-text { font-size: 0.75rem; color: var(--muted-fg); font-weight: 600; white-space: nowrap; }
+    .demo-btns { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .demo-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+      padding: 0.625rem 0.5rem; border-radius: 0.75rem; border: 1.5px solid var(--border);
+      background: var(--card); cursor: pointer; font-size: 0.7rem; font-weight: 700;
+      color: var(--muted-fg); transition: all 0.15s;
+    }
+    .demo-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-10); }
+    .demo-btn .demo-icon { font-size: 1.1rem; }
+  </style>
+</head>
+<body>
+<div id="toastContainer" class="toast-container"></div>
+
+<div class="auth-wrap">
+  <div class="auth-panel-left">
+    <div class="auth-left-content">
+      <div class="auth-left-logo">
+        <div class="auth-left-logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+          </svg>
+        </div>
+        <span class="auth-left-logo-text">Renewa</span>
+      </div>
+      <h1 class="auth-left-title">Join the Clean Energy Revolution</h1>
+      <p class="auth-left-sub">Buy, sell, and invest in renewable energy — all in one marketplace.</p>
+      <div class="auth-roles-preview">
+        <div class="auth-role-pill">
+          <div class="auth-role-pill-icon" style="background:hsla(152,76%,40%,0.3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+          </div>
+          <div>
+            <div class="auth-role-pill-name">Consumer</div>
+            <div class="auth-role-pill-desc">Buy certified green energy & track impact</div>
+          </div>
+        </div>
+        <div class="auth-role-pill">
+          <div class="auth-role-pill-icon" style="background:hsla(38,92%,50%,0.3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="auth-role-pill-name">Producer</div>
+            <div class="auth-role-pill-desc">List your renewable energy & earn revenue</div>
+          </div>
+        </div>
+        <div class="auth-role-pill">
+          <div class="auth-role-pill-icon" style="background:hsla(213,93%,55%,0.3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <div>
+            <div class="auth-role-pill-name">Investor</div>
+            <div class="auth-role-pill-desc">Fund clean energy projects & earn returns</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-panel-right">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-card-logo">
+          <div class="auth-card-logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+            </svg>
+          </div>
+          <span class="auth-card-logo-text">Renewa</span>
+        </div>
+        <h2 class="auth-card-title">Welcome back</h2>
+        <p class="auth-card-sub">Sign in to your account or create a new one</p>
+      </div>
+
+      <div class="auth-tabs" style="grid-template-columns:1fr 1fr 1fr">
+        <button class="auth-tab-btn active" data-tab="login" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab-btn" data-tab="register" onclick="switchAuthTab('register')">Register</button>
+        <button class="auth-tab-btn" data-tab="face" onclick="switchAuthTab('face')">😊 Face ID</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="panel-login" class="auth-panel active">
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label-sm">Email address</label>
+            <input id="loginEmail" class="form-input" type="email" placeholder="you@example.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label-sm">Password</label>
+            <input id="loginPassword" class="form-input" type="password" placeholder="••••••••" required/>
+          </div>
+          <span class="role-label">Sign in as</span>
+          <div class="role-grid">
+            <div class="role-item">
+              <input type="radio" id="lConsumer" name="loginRole" value="consumer" checked onchange="loginRole='consumer'"/>
+              <label for="lConsumer">
+                <div class="role-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                Consumer
+              </label>
+            </div>
+            <div class="role-item">
+              <input type="radio" id="lProducer" name="loginRole" value="producer" onchange="loginRole='producer'"/>
+              <label for="lProducer">
+                <div class="role-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                  </svg>
+                </div>
+                Producer
+              </label>
+            </div>
+            <div class="role-item">
+              <input type="radio" id="lInvestor" name="loginRole" value="investor" onchange="loginRole='investor'"/>
+              <label for="lInvestor">
+                <div class="role-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+                  </svg>
+                </div>
+                Investor
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="auth-submit-btn">Sign In →</button>
+        </form>
+        <div class="demo-divider">
+          <div class="demo-divider-line"></div>
+          <span class="demo-divider-text">or try a demo account</span>
+          <div class="demo-divider-line"></div>
+        </div>
+        <div class="demo-btns">
+          <button class="demo-btn" onclick="demoLogin('consumer')"><span class="demo-icon">🏠</span>Consumer</button>
+          <button class="demo-btn" onclick="demoLogin('producer')"><span class="demo-icon">☀️</span>Producer</button>
+          <button class="demo-btn" onclick="demoLogin('investor')"><span class="demo-icon">📈</span>Investor</button>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="panel-register" class="auth-panel">
+        <form onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label class="form-label-sm">Full name</label>
+            <input id="regName" class="form-input" type="text" placeholder="Your name" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label-sm">Email address</label>
+            <input id="regEmail" class="form-input" type="email" placeholder="you@example.com" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label-sm">Password</label>
+            <input id="regPassword" class="form-input" type="password" placeholder="••••••••" required/>
+          </div>
+          <span class="role-label">Join as</span>
+          <div class="role-grid">
+            <div class="role-item">
+              <input type="radio" id="rConsumer" name="regRole" value="consumer" checked onchange="regRole='consumer'"/>
+              <label for="rConsumer">
+                <div class="role-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                Consumer
+              </label>
+            </div>
+            <div class="role-item">
+              <input type="radio" id="rProducer" name="regRole" value="producer" onchange="regRole='producer'"/>
+              <label for="rProducer">
+                <div class="role-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+                    <line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                  </svg>
+                </div>
+                Producer
+              </label>
+            </div>
+            <div class="role-item">
+              <input type="radio" id="rInvestor" name="regRole" value="investor" onchange="regRole='investor'"/>
+              <label for="rInvestor">
+                <div class="role-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+                  </svg>
+                </div>
+                Investor
+              </label>
+            </div>
+          </div>
+          <button type="submit" class="auth-submit-btn">Create Account →</button>
+        </form>
+      </div>
+            <!-- FACE ID LOGIN PANEL -->
+      <div id="panel-face" class="auth-panel">
+
+        <p id="faceLoginStatus" style="font-size:.82rem;font-weight:700;padding:.5rem .75rem;background:#eff6ff;border-radius:.5rem;margin-bottom:.75rem;color:#2563eb;min-height:2.2em;line-height:1.4;white-space:pre-line;">
+          Click "Start Camera" to begin face login
+        </p>
+
+        <!-- Camera box -->
+        <div style="position:relative;width:100%;aspect-ratio:4/3;background:#0f172a;border-radius:.875rem;overflow:hidden;border:2px solid #334155;margin-bottom:.75rem;">
+          <video id="faceLoginVideo" autoplay muted playsinline
+            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block;"></video>
+          <canvas id="faceLoginCanvas"
+            style="position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none;"></canvas>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+            <div style="width:48%;aspect-ratio:3/4;border:3px dashed rgba(255,255,255,.45);border-radius:50%;"></div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.75rem;">
+          <button id="faceLoginStartBtn" onclick="initFaceLogin()"
+            style="padding:.75rem;border-radius:.875rem;border:none;background:#2563eb;color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;">
+            📷 Start Camera
+          </button>
+          <button id="faceLoginScanBtn" onclick="doFaceLogin()"
+            style="display:none;padding:.75rem;border-radius:.875rem;border:none;background:var(--primary,#22c55e);color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;">
+            🔍 Login with Face
+          </button>
+        </div>
+        <button onclick="stopFaceAndReset()"
+          style="width:100%;padding:.5rem;border:1.5px solid var(--border,#e2e8f0);border-radius:.75rem;background:transparent;cursor:pointer;font-size:.82rem;color:var(--muted-fg,#64748b);font-weight:600;">
+          ✕ Cancel / Use Password Instead
+        </button>
+
+        <p style="font-size:.72rem;color:#94a3b8;margin:.75rem 0 0;line-height:1.5;text-align:center;">
+          💡 Face login works after you set up Face ID from your dashboard
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+
+<!-- ───────────────────────────────────────────────────────────
+     Face ID styles
+─────────────────────────────────────────────────────────────── -->
+<style>
+  #panel-face video { display: block; }
+  .face-dot {
+    display:inline-block;width:.5rem;height:.5rem;border-radius:50%;
+    background:currentColor;margin-right:.3rem;vertical-align:middle;
+  }
+</style>
+
+<!-- face-api.js -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/razorpay.js"></script>
+<script src="../js/face.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/auth.js"></script>
+
+<script>
+/* ── Face Login page helpers ── */
+async function initFaceLogin() {
+  const sb = document.getElementById('faceLoginStartBtn');
+  const sc = document.getElementById('faceLoginScanBtn');
+  sb.disabled = true;
+  sb.textContent = '⏳ Loading…';
+  updateFaceStatusEl('faceLoginStatus', '⏳ Loading face models (may take ~10s first time)…', 'waiting');
+  try {
+    await loadFaceModels();
+    updateFaceStatusEl('faceLoginStatus', '📷 Starting camera…', 'waiting');
+    await startFaceCamera('faceLoginVideo');
+    startLiveDetection('faceLoginVideo', 'faceLoginCanvas', 'faceLoginStatus');
+    sb.style.display = 'none';
+    sc.style.display = 'block';
+  } catch(e) {
+    updateFaceStatusEl('faceLoginStatus', '❌ ' + e.message, 'error');
+    sb.disabled = false;
+    sb.textContent = '🔄 Retry';
+  }
+}
+
+async function doFaceLogin() {
+  const sc = document.getElementById('faceLoginScanBtn');
+  sc.disabled = true;
+  sc.textContent = '🔄 Scanning…';
+  await faceLogin('faceLoginVideo', 'faceLoginStatus');
+  sc.disabled = false;
+  sc.textContent = '🔍 Login with Face';
+}
+
+function stopFaceAndReset() {
+  stopFaceCamera();
+  const sb = document.getElementById('faceLoginStartBtn');
+  const sc = document.getElementById('faceLoginScanBtn');
+  if (sb) { sb.style.display = 'block'; sb.disabled = false; sb.textContent = '📷 Start Camera'; }
+  if (sc) { sc.style.display = 'none'; }
+  updateFaceStatusEl('faceLoginStatus', 'Click "Start Camera" to begin face login', 'waiting');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Login — Renewa KYC</title>
+  <link rel="stylesheet" href="../css/styles.css"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .login-card {
+      background: #fff; border-radius: 1.25rem; padding: 2.5rem 2rem;
+      width: min(420px, 94vw); box-shadow: 0 25px 60px rgba(0,0,0,.4);
+    }
+    .logo-row {
+      display: flex; align-items: center; gap: .75rem;
+      justify-content: center; margin-bottom: 2rem;
+    }
+    .logo-icon {
+      width: 3rem; height: 3rem; border-radius: .875rem;
+      background: linear-gradient(135deg,#22c55e,#15803d);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 1.5rem; height: 1.5rem; color: white; }
+    .logo-text { font-size: 1.6rem; font-weight: 900; color: #0f172a; }
+    .admin-badge {
+      display: block; text-align: center; background: #1e3a5f;
+      color: #93c5fd; font-size: .72rem; font-weight: 700;
+      letter-spacing: .08em; padding: .35rem .75rem; border-radius: 999px;
+      margin: -.5rem auto 1.75rem; width: fit-content;
+    }
+    h2 { margin: 0 0 .25rem; font-size: 1.35rem; font-weight: 900; color: #0f172a; text-align:center; }
+    p.sub { color: #64748b; font-size: .82rem; text-align: center; margin: 0 0 1.75rem; }
+    .field { margin-bottom: 1.1rem; }
+    .field label { display: block; font-size: .78rem; font-weight: 700; color: #334155; margin-bottom: .4rem; }
+    .field input {
+      width: 100%; padding: .75rem .9rem; border: 1.5px solid #e2e8f0;
+      border-radius: .75rem; font-size: .9rem; font-family: inherit;
+      color: #0f172a; background: #f8fafc; transition: .2s;
+    }
+    .field input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37,99,235,.12); background:#fff; }
+    .error-box {
+      display: none; padding: .6rem .875rem; border-radius: .6rem;
+      background: #fef2f2; border: 1.5px solid #fca5a5;
+      color: #dc2626; font-size: .82rem; font-weight: 600; margin-bottom: 1rem;
+    }
+    .submit-btn {
+      width: 100%; padding: .875rem; background: #1e3a5f; color: #fff;
+      border: none; border-radius: .875rem; font-size: .95rem; font-weight: 800;
+      cursor: pointer; transition: .2s; margin-top: .25rem;
+      box-shadow: 0 4px 14px rgba(30,58,95,.35);
+    }
+    .submit-btn:hover { background: #1e40af; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .hint {
+      margin: 1.25rem 0 0; padding: .875rem; background: #f8fafc;
+      border-radius: .75rem; border: 1.5px solid #e2e8f0;
+    }
+    .hint p { margin: 0; font-size: .75rem; color: #64748b; line-height: 1.6; }
+    .hint strong { color: #334155; }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="logo-row">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/>
+        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>
+      </svg>
+    </div>
+    <span class="logo-text">Renewa</span>
+  </div>
+
+  <span class="admin-badge">🔐 ADMIN PORTAL</span>
+
+  <h2>KYC Admin Login</h2>
+  <p class="sub">Sign in with your admin credentials to review KYC submissions</p>
+
+  <div id="errorBox" class="error-box"></div>
+
+  <div class="field">
+    <label>Username</label>
+    <input id="adminUser" type="text" placeholder="admin" autocomplete="username"
+      onkeydown="if(event.key==='Enter') doAdminLogin()"/>
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input id="adminPass" type="password" placeholder="••••••••••••" autocomplete="current-password"
+      onkeydown="if(event.key==='Enter') doAdminLogin()"/>
+  </div>
+
+  <button id="loginBtn" class="submit-btn" onclick="doAdminLogin()">
+    Sign In to Admin Panel →
+  </button>
+
+  <div class="hint">
+    <p>
+      <strong>Default credentials:</strong><br>
+      Username: <strong>admin</strong><br>
+      Password: <strong>renewa@admin2026</strong><br>
+      <span style="color:#94a3b8;font-size:.7rem;">Change these in <code>backend/.env</code></span>
+    </p>
+  </div>
+</div>
+
+<script>
+async function doAdminLogin() {
+  const username = document.getElementById('adminUser').value.trim();
+  const password = document.getElementById('adminPass').value;
+  const btn      = document.getElementById('loginBtn');
+  const errBox   = document.getElementById('errorBox');
+
+  errBox.style.display = 'none';
+
+  if (!username || !password) {
+    errBox.textContent = '⚠ Please enter username and password';
+    errBox.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Signing in…';
+
+  try {
+    const res  = await fetch('http://localhost:5000/api/kyc/admin/login', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      errBox.textContent = '❌ ' + (data.message || 'Login failed');
+      errBox.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Sign In to Admin Panel →';
+      return;
+    }
+
+    // Store admin token separately from user session
+    localStorage.setItem('adminToken', data.token);
+    localStorage.setItem('token', data.token); // so getToken() works on admin panel
+
+    // Redirect to admin panel
+    window.location.href = 'kyc-admin.html';
+
+  } catch(e) {
+    errBox.textContent = '❌ Cannot reach server. Is backend running on port 5000?';
+    errBox.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Sign In to Admin Panel →';
+  }
+}
+
+// If already logged in as admin, redirect directly
+const existing = localStorage.getItem('adminToken');
+if (existing) {
+  // Quick verify
+  fetch('http://localhost:5000/api/kyc/admin/list', {
+    headers: { Authorization: 'Bearer ' + existing }
+  }).then(r => {
+    if (r.ok) window.location.href = 'kyc-admin.html';
+    else localStorage.removeItem('adminToken');
+  }).catch(() => {});
+}
+</script>
+</body>
+</html>

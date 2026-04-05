@@ -1,0 +1,160 @@
+/* ============================================================
+   RENEWA — Dark Theme (applied to all pages)
+   ============================================================ */
+
+:root {
+  --background:      hsl(160, 25%, 5%);
+  --foreground:      hsl(140, 20%, 92%);
+  --card:            hsl(160, 20%, 9%);
+  --card-foreground: hsl(140, 20%, 92%);
+  --primary:         hsl(152, 76%, 45%);
+  --primary-fg:      hsl(0, 0%, 0%);
+  --primary-10:      hsla(152, 76%, 45%, 0.12);
+  --primary-20:      hsla(152, 76%, 45%, 0.20);
+  --secondary:       hsl(168, 84%, 50%);
+  --secondary-fg:    hsl(0, 0%, 100%);
+  --secondary-10:    hsla(168, 84%, 50%, 0.12);
+  --muted:           hsl(160, 15%, 13%);
+  --muted-fg:        hsl(140, 15%, 55%);
+  --accent:          hsl(160, 20%, 12%);
+  --border:          hsl(160, 15%, 15%);
+  --ring:            hsl(152, 76%, 45%);
+
+  --shadow-sm:       0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:       0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg:       0 10px 30px rgba(0,0,0,0.6);
+  --shadow-xl:       0 20px 50px rgba(0,0,0,0.7);
+  --shadow-primary:  0 8px 24px hsla(152, 76%, 45%, 0.3);
+
+  --yellow-10:       hsla(45, 93%, 47%, 0.12);
+  --yellow-500:      hsl(45, 93%, 55%);
+  --emerald-500:     hsl(152, 76%, 50%);
+  --emerald-10:      hsla(152, 76%, 45%, 0.12);
+  --blue-400:        hsl(213, 93%, 68%);
+  --blue-10:         hsla(213, 93%, 68%, 0.12);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+.navbar, main, [role="main"], footer, header, .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Navbar dark */
+.navbar {
+  background: hsla(160, 25%, 5%, 0.92) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.nav-link { color: var(--muted-fg); }
+.nav-link:hover, .nav-link.active { color: var(--primary); }
+.nav-logo-text { color: var(--foreground); }
+.nav-logo-icon { background: var(--primary-10); border-color: hsla(152,76%,45%,0.2); }
+
+/* Mobile nav drawer dark */
+.nav-drawer { background: var(--card) !important; border-top: 1px solid var(--border); }
+
+/* Glass panel dark */
+.glass-panel {
+  background: hsla(160, 20%, 10%, 0.88) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Card dark */
+.card { background: var(--card); border-color: var(--border); }
+.card-header { border-bottom-color: var(--border); }
+.card-header h3 { color: var(--foreground); }
+
+/* Footer dark */
+.site-footer {
+  background: hsl(160, 25%, 4%) !important;
+  border-top: 1px solid var(--border);
+}
+.site-footer a:hover { color: var(--primary); }
+.footer-bottom { border-top-color: var(--border) !important; color: var(--muted-fg); }
+.footer-brand p { color: var(--muted-fg); }
+.footer-col h4 { color: var(--foreground); }
+.footer-col a { color: var(--muted-fg); transition: color 0.2s; }
+
+/* Stat cards dark */
+.stat-card { background: var(--card); border-color: var(--border); }
+.stat-card-featured {
+  background: linear-gradient(135deg, hsl(152,60%,15%) 0%, hsl(160,50%,12%) 100%) !important;
+  border-color: hsla(152,76%,45%,0.3) !important;
+}
+
+/* Dashboard dark */
+.dash-title, .dash-subtitle { color: var(--foreground); }
+.dash-subtitle { color: var(--muted-fg); }
+.tx-buyer, .tx-price { color: var(--foreground); }
+.tx-time, .tx-kwh { color: var(--muted-fg); }
+.tx-item { border-bottom-color: var(--border); }
+
+/* Auth dark */
+.auth-card { background: var(--card); border: 1px solid var(--border); }
+.auth-card-title { color: var(--foreground); }
+.auth-card-subtitle { color: var(--muted-fg); }
+.auth-tabs { background: var(--muted); }
+.auth-tab-btn { color: var(--muted-fg); }
+.auth-tab-btn.active { background: var(--card); color: var(--foreground); }
+.auth-form-btn {
+  background: var(--primary) !important;
+  color: var(--primary-fg) !important;
+}
+
+/* Marketplace dark */
+.search-input { background: var(--muted); color: var(--foreground); border-color: var(--border); }
+.filter-btn { background: var(--muted); color: var(--foreground); border-color: var(--border); }
+
+/* Roles section (pages) dark */
+.roles-section { background: var(--muted) !important; }
+.role-card { background: var(--card) !important; border-color: var(--border) !important; }
+.role-card:hover { border-color: hsla(152,76%,45%,0.4) !important; }
+
+/* Balance pill dark */
+.balance-pill { background: var(--card); border: 1px solid var(--border); }
+
+/* Progress bar dark */
+.progress { background: var(--muted); }
+
+/* Donut/chart area */
+.donut-center-value { color: var(--primary); }
+.donut-center-label { color: var(--muted-fg); }
+
+/* Sub cards / subscriptions */
+.sub-item { border-bottom-color: var(--border); }
+.sub-name { color: var(--foreground); }
+.sub-location { color: var(--muted-fg); }
+.sustainability-banner { background: linear-gradient(135deg, hsl(152,50%,10%), hsl(160,40%,12%)); border: 1px solid hsla(152,76%,45%,0.2); }
+.banner-title { color: var(--foreground); }
+.banner-sub { color: var(--muted-fg); }
+
+/* btn-dark */
+.btn-dark { background: var(--primary); color: var(--primary-fg); }
+
+/* Project cards */
+.project-card { background: var(--card); border-color: var(--border); }
+.project-card:hover { border-color: hsla(152,76%,45%,0.4); }
+
+/* Section headers on inner pages */
+.marketplace-header h1 { color: var(--foreground); }
+.marketplace-header p  { color: var(--muted-fg); }
+
+/* Scrollbar */
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--border); }

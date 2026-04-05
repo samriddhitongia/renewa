@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/toast.css" />
+  <style>
+    .about-hero { background:linear-gradient(135deg,hsl(152,40%,93%) 0%,hsl(210,40%,92%) 100%); padding:5rem 0 4rem; text-align:center; position:relative; overflow:hidden; }
+    .about-hero::before { content:''; position:absolute; top:-4rem; left:50%; transform:translateX(-50%); width:32rem; height:32rem; background:radial-gradient(circle,hsla(152,76%,50%,0.12) 0%,transparent 70%); border-radius:50%; pointer-events:none; }
+    .hero-chip { display:inline-flex; align-items:center; gap:0.5rem; background:var(--primary-10); border:1px solid var(--primary-20); color:var(--primary); padding:0.35rem 1rem; border-radius:50rem; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1.5rem; }
+    .about-hero h1 { font-size:clamp(2.2rem,5vw,3.5rem); font-weight:900; letter-spacing:-0.04em; margin-bottom:1.25rem; line-height:1.1; }
+    .about-hero p { font-size:1.1rem; color:var(--muted-fg); max-width:38rem; margin:0 auto; line-height:1.75; }
+
+    .section { padding-block:5rem; }
+    .section-alt { background:var(--muted); }
+    .section-dark { background:hsl(160,50%,8%); color:white; }
+    .sl { display:inline-block; font-size:0.72rem; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--primary); margin-bottom:0.75rem; }
+    .sl-white { color:hsl(152,76%,50%); }
+    .sh2 { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:-0.04em; margin-bottom:1rem; line-height:1.15; }
+    .sp { font-size:1rem; color:var(--muted-fg); line-height:1.8; max-width:38rem; }
+    .sp-white { color:hsl(140,15%,58%); }
+
+    .impact-bar { background:hsl(160,50%,8%); padding:3rem 0; }
+    .impact-inner { display:grid; grid-template-columns:repeat(4,1fr); gap:1.5rem; }
+    @media(max-width:768px){.impact-inner{grid-template-columns:repeat(2,1fr);}}
+    .impact-item { text-align:center; }
+    .impact-num { font-family:'Outfit',sans-serif; font-size:clamp(1.8rem,3.5vw,2.5rem); font-weight:900; color:hsl(152,76%,50%); letter-spacing:-0.04em; line-height:1; }
+    .impact-label { font-size:0.75rem; font-weight:700; color:hsl(140,15%,55%); margin-top:0.35rem; text-transform:uppercase; letter-spacing:0.07em; }
+
+    .split-2 { display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+    @media(max-width:768px){.split-2{grid-template-columns:1fr;gap:2.5rem;}}
+    .mission-visual { background:linear-gradient(135deg,hsl(152,40%,88%),hsl(210,40%,88%)); border-radius:1.5rem; padding:2.5rem; display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+    .mstat { background:white; border-radius:1rem; padding:1.25rem; box-shadow:var(--shadow-sm); transition:transform 0.2s,box-shadow 0.2s; }
+    .mstat:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); }
+    .mstat-num { font-family:'Outfit',sans-serif; font-size:1.8rem; font-weight:900; color:var(--primary); letter-spacing:-0.04em; line-height:1; }
+    .mstat-label { font-size:0.72rem; font-weight:700; color:var(--muted-fg); margin-top:0.3rem; text-transform:uppercase; letter-spacing:0.07em; }
+
+    .goals-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem; margin-top:3rem; }
+    .goal-card { background:var(--card); border:1.5px solid var(--border); border-radius:1.25rem; padding:2rem; transition:all 0.3s; box-shadow:var(--shadow-sm); }
+    .goal-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); border-color:hsla(152,76%,40%,0.3); }
+    .gicon { width:3.25rem; height:3.25rem; border-radius:1rem; background:var(--primary-10); border:1px solid var(--primary-20); display:flex; align-items:center; justify-content:center; margin-bottom:1.25rem; transition:all 0.2s; }
+    .goal-card:hover .gicon { background:var(--primary); }
+    .goal-card:hover .gicon svg { color:white; }
+    .gicon svg { width:1.5rem; height:1.5rem; color:var(--primary); transition:color 0.2s; }
+    .goal-card h3 { font-size:1.1rem; font-weight:800; margin-bottom:0.65rem; }
+    .goal-card p { font-size:0.875rem; color:var(--muted-fg); line-height:1.75; }
+
+    .tl { margin-top:2.5rem; }
+    .tl-item { display:grid; grid-template-columns:3rem 1fr; gap:1.5rem; margin-bottom:2.5rem; position:relative; }
+    .tl-item::before { content:''; position:absolute; left:1.5rem; top:3.5rem; width:1.5px; height:calc(100% + 1rem); background:linear-gradient(to bottom,var(--primary-20),transparent); }
+    .tl-item:last-child::before { display:none; }
+    .tl-num { width:3rem; height:3rem; border-radius:50%; background:var(--primary); color:white; font-family:'Outfit',sans-serif; font-size:1.1rem; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px hsla(152,76%,40%,0.3); z-index:1; position:relative; }
+    .tl-body { padding-top:0.5rem; }
+    .tl-body h3 { font-size:1.1rem; font-weight:800; margin-bottom:0.5rem; }
+    .tl-body p { font-size:0.875rem; color:var(--muted-fg); line-height:1.75; }
+    .tl-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.75rem; }
+    .tt { padding:0.25rem 0.65rem; border-radius:50rem; font-size:0.72rem; font-weight:700; }
+
+    .values-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+    @media(max-width:768px){.values-grid{grid-template-columns:1fr;}}
+    @media(min-width:481px) and (max-width:768px){.values-grid{grid-template-columns:repeat(2,1fr);}}
+    .value-card { text-align:center; padding:2.5rem 1.5rem; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:1.25rem; transition:all 0.3s; }
+    .value-card:hover { background:rgba(255,255,255,0.1); transform:translateY(-4px); }
+    .value-emoji { font-size:2.5rem; margin-bottom:1rem; }
+    .value-card h3 { font-size:1.1rem; font-weight:800; color:white; margin-bottom:0.65rem; }
+    .value-card p { font-size:0.875rem; color:hsl(140,15%,60%); line-height:1.75; }
+
+    .team-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.5rem; margin-top:3rem; }
+    .team-card { background:var(--card); border:1.5px solid var(--border); border-radius:1.25rem; padding:1.75rem 1.25rem; text-align:center; transition:all 0.3s; box-shadow:var(--shadow-sm); }
+    .team-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); border-color:hsla(152,76%,40%,0.25); }
+    .tavatar { width:4.5rem; height:4.5rem; border-radius:50%; background:linear-gradient(135deg,var(--primary),hsl(152,60%,28%)); display:flex; align-items:center; justify-content:center; font-family:'Outfit',sans-serif; font-size:1.5rem; font-weight:900; color:white; margin:0 auto 1rem; box-shadow:0 4px 16px hsla(152,76%,40%,0.3); }
+    .tname { font-size:0.95rem; font-weight:800; margin-bottom:0.25rem; }
+    .trole { font-size:0.78rem; color:var(--primary); font-weight:700; margin-bottom:0.5rem; }
+    .tbio { font-size:0.78rem; color:var(--muted-fg); line-height:1.6; }
+
+    .partners-row { display:flex; align-items:center; justify-content:center; gap:1.5rem; flex-wrap:wrap; margin-top:2.5rem; }
+    .partner-pill { padding:0.75rem 1.5rem; background:var(--muted); border:1.5px solid var(--border); border-radius:0.75rem; font-size:0.85rem; font-weight:700; color:var(--muted-fg); transition:all 0.2s; }
+    .partner-pill:hover { border-color:var(--primary); color:var(--primary); background:var(--primary-10); }
+
+    .faq-list { margin-top:2.5rem; }
+    .faq-item { border:1.5px solid var(--border); border-radius:1rem; overflow:hidden; margin-bottom:0.75rem; transition:border-color 0.2s; }
+    .faq-item:hover { border-color:hsla(152,76%,40%,0.3); }
+    .faq-q { display:flex; justify-content:space-between; align-items:center; padding:1.25rem 1.5rem; cursor:pointer; font-size:0.95rem; font-weight:700; transition:background 0.15s; }
+    .faq-q:hover { background:var(--muted); }
+    .faq-chevron { width:1.1rem; height:1.1rem; color:var(--primary); transition:transform 0.25s; flex-shrink:0; }
+    .faq-item.open .faq-chevron { transform:rotate(180deg); }
+    .faq-a { max-height:0; overflow:hidden; transition:max-height 0.35s ease,padding 0.35s ease; font-size:0.875rem; color:var(--muted-fg); line-height:1.75; padding:0 1.5rem; }
+    .faq-item.open .faq-a { max-height:200px; padding:0 1.5rem 1.25rem; }
+
+    .about-cta { background:var(--card); padding:5rem 0; text-align:center; }
+    .about-cta h2 { font-size:clamp(1.8rem,4vw,2.8rem); font-weight:900; letter-spacing:-0.04em; margin-bottom:1rem; }
+    .about-cta p { font-size:1rem; color:var(--muted-fg); max-width:34rem; margin:0 auto 2.5rem; line-height:1.75; }
+    .cta-row { display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+<header class="navbar" role="banner"></header>
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<main role="main">
+
+<!-- Hero -->
+<section class="about-hero">
+  <div class="container">
+    <div class="hero-chip animate-fade-in-up">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/></svg>
+      Our Story
+    </div>
+    <h1 class="animate-fade-in-up">Powering the Future of<br><span class="text-gradient">Clean Energy Trade</span></h1>
+    <p class="animate-fade-in-up delay-100">Renewa is the world's first peer-to-peer renewable energy marketplace — connecting producers, consumers, and investors to build a decentralized clean energy economy.</p>
+  </div>
+</section>
+
+<!-- Impact numbers (dark bar) -->
+<div class="impact-bar">
+  <div class="container">
+    <div class="impact-inner">
+      <div class="impact-item"><div class="impact-num">12.8M+</div><div class="impact-label">kWh Traded</div></div>
+      <div class="impact-item"><div class="impact-num">5,376t</div><div class="impact-label">CO₂ Prevented</div></div>
+      <div class="impact-item"><div class="impact-num">2,840+</div><div class="impact-label">Active Producers</div></div>
+      <div class="impact-item"><div class="impact-num">186</div><div class="impact-label">Projects Funded</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Mission -->
+<section class="section">
+  <div class="container">
+    <div class="split-2">
+      <div class="animate-fade-in-up">
+        <div class="sl">Our Mission</div>
+        <h2 class="sh2">Democratizing Renewable Energy Access</h2>
+        <p class="sp">We believe clean energy shouldn't be a luxury. Renewa breaks down the barriers between renewable energy producers and those who want to use it — making green energy affordable, traceable, and community-driven.</p>
+        <p class="sp" style="margin-top:1rem">Our platform enables anyone with solar panels, wind turbines, or biogas facilities to list their surplus energy and sell it directly to local buyers — cutting out utility middlemen and reducing costs by up to 30%.</p>
+        <div style="display:flex;gap:0.75rem;margin-top:2rem;flex-wrap:wrap">
+          <a class="btn btn-default btn-rounded" href="auth.html">Join the Movement</a>
+          <a class="btn btn-outline btn-rounded" href="marketplace.html">Explore Marketplace</a>
+        </div>
+      </div>
+      <div class="mission-visual animate-fade-in-up delay-200">
+        <div class="mstat"><div class="mstat-num">30%</div><div class="mstat-label">Avg Cost Saving</div></div>
+        <div class="mstat"><div class="mstat-num">100%</div><div class="mstat-label">Renewable Sources</div></div>
+        <div class="mstat"><div class="mstat-num">48h</div><div class="mstat-label">Avg Listing Time</div></div>
+        <div class="mstat"><div class="mstat-num">9.2%</div><div class="mstat-label">Avg Investor ROI</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Goals -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="animate-fade-in-up" style="text-align:center">
+      <div class="sl">What We're Building Toward</div>
+      <h2 class="sh2">Our Goals for 2030</h2>
+      <p class="sp" style="margin:0 auto">Ambitious targets that guide every product decision we make.</p>
+    </div>
+    <div class="goals-grid">
+      <div class="goal-card animate-fade-in-up delay-100">
+        <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 8C8 10 5.9 16.17 3.82 22h0A15.63 15.63 0 0 1 2 17c0-5.52 3.71-10.56 9.44-13.75A15.56 15.56 0 0 1 20 2c0 3-1.31 6.24-3 8z"/></svg></div>
+        <h3>1 GW of Clean Energy Traded</h3>
+        <p>Facilitate trading of 1 gigawatt of certified renewable energy annually, displacing coal and gas generation globally.</p>
+      </div>
+      <div class="goal-card animate-fade-in-up delay-150">
+        <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>1 Million Energy Users</h3>
+        <p>Connect 1M producers, consumers and investors across 50+ countries on our decentralized energy network.</p>
+      </div>
+      <div class="goal-card animate-fade-in-up delay-200">
+        <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <h3>Net Zero Marketplace</h3>
+        <p>Achieve verified net-zero carbon footprint across all platform operations and fund removal for offset emissions.</p>
+      </div>
+      <div class="goal-card animate-fade-in-up delay-100">
+        <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <h3>$500M in Project Funding</h3>
+        <p>Channel $500M of investor capital into shovel-ready renewable energy projects in emerging markets by 2030.</p>
+      </div>
+      <div class="goal-card animate-fade-in-up delay-150">
+        <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h3>Energy Access in 100 Countries</h3>
+        <p>Expand marketplace to 100 countries, focusing on underserved communities with limited grid access.</p>
+      </div>
+      <div class="goal-card animate-fade-in-up delay-200">
+        <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Real-Time Grid Integration</h3>
+        <p>Build API integrations with 20 national grid operators for seamless real-time peer-to-peer energy tracking.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works + FAQ -->
+<section class="section">
+  <div class="container">
+    <div class="split-2" style="align-items:start">
+      <div class="animate-fade-in-up">
+        <div class="sl">The Process</div>
+        <h2 class="sh2">How Renewa Works</h2>
+        <p class="sp">Our platform simplifies peer-to-peer energy trading into four steps — from listing surplus energy to earning revenue from it.</p>
+        <div class="tl">
+          <div class="tl-item">
+            <div class="tl-num">1</div>
+            <div class="tl-body">
+              <h3>Register &amp; Verify</h3>
+              <p>Producers register generation equipment and get verified through our green certification process. Consumers and investors sign up in minutes.</p>
+              <div class="tl-tags"><span class="tt" style="background:var(--primary-10);color:var(--primary)">KYC Verified</span><span class="tt" style="background:var(--muted);color:var(--muted-fg)">Equipment Scan</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num">2</div>
+            <div class="tl-body">
+              <h3>List or Browse Energy</h3>
+              <p>Producers list available kWh with pricing, location and availability. Consumers browse with smart filters and AI-powered matching.</p>
+              <div class="tl-tags"><span class="tt" style="background:var(--yellow-10);color:var(--yellow-500)">☀️ Solar</span><span class="tt" style="background:var(--blue-10);color:var(--secondary)">💨 Wind</span><span class="tt" style="background:var(--primary-10);color:var(--primary)">🌿 Biomass</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num">3</div>
+            <div class="tl-body">
+              <h3>Smart Match &amp; Purchase</h3>
+              <p>AI finds the best producer match based on location, price, availability and rating. Consumers confirm purchase and receive a digital Renewable Energy Certificate.</p>
+              <div class="tl-tags"><span class="tt" style="background:var(--primary-10);color:var(--primary)">AI Matching</span><span class="tt" style="background:var(--muted);color:var(--muted-fg)">REC Issued</span></div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num">4</div>
+            <div class="tl-body">
+              <h3>Earn, Track &amp; Impact</h3>
+              <p>Producers earn revenue. Consumers save money and track carbon savings. Investors receive returns. Everyone gets a live impact dashboard.</p>
+              <div class="tl-tags"><span class="tt" style="background:var(--primary-10);color:var(--primary)">Live Analytics</span><span class="tt" style="background:var(--muted);color:var(--muted-fg)">CO₂ Tracking</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="animate-fade-in-up delay-200" style="padding-top:4.5rem">
+        <div class="sl">FAQ</div>
+        <h2 class="sh2" style="font-size:1.8rem">Common Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How is energy actually delivered?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="faq-a">Energy is delivered via the existing electrical grid. Renewa issues digital Renewable Energy Certificates (RECs) that prove your consumption was matched to a verified renewable source — similar to carbon offsets but for electricity.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What energy types can be listed?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="faq-a">Solar PV, Wind turbines, and Biomass/Biogas are currently supported. Hydroelectric and geothermal support is coming Q3 2026. All sources must meet our green certification standards before listing.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">How are prices determined?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="faq-a">Producers set their own prices. Our AI recommends optimal pricing based on local demand, time of day, energy type and market conditions. Typical Renewa prices are 20–35% below utility rates.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">Are investments protected?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="faq-a">All projects are vetted by our investment team with binding offtake agreements, verified land rights and engineering reports. We offer limited escrow protection for retail investors under $50,000.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFaq(this)">What are Renewa's fees?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="faq-a">We charge a 2.5% transaction fee on energy purchases, split between buyer and seller. Listing is always free. For investment projects, a 1% management fee applies on returns — only when you profit.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Values (dark) -->
+<section class="section section-dark">
+  <div class="container">
+    <div style="text-align:center" class="animate-fade-in-up">
+      <div class="sl sl-white">What We Stand For</div>
+      <h2 class="sh2">Our Core Values</h2>
+      <p class="sp sp-white" style="margin:0 auto">The principles that guide every decision at Renewa.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card animate-fade-in-up delay-100"><div class="value-emoji">🌍</div><h3>Planet First</h3><p>Every product decision starts with: does this help accelerate the clean energy transition? If not, we don't build it.</p></div>
+      <div class="value-card animate-fade-in-up delay-150"><div class="value-emoji">⚖️</div><h3>Energy Equity</h3><p>Clean energy shouldn't be for wealthy nations only. We actively subsidize access for underserved markets and small producers.</p></div>
+      <div class="value-card animate-fade-in-up delay-200"><div class="value-emoji">🔍</div><h3>Radical Transparency</h3><p>Every kWh traded, every CO₂ ton prevented, every dollar earned is verifiable on our public ledger. No greenwashing, ever.</p></div>
+      <div class="value-card animate-fade-in-up delay-100"><div class="value-emoji">🤝</div><h3>Community Ownership</h3><p>We're building toward a cooperative model where participants own a share of the value they create. Energy communities, not corporations.</p></div>
+      <div class="value-card animate-fade-in-up delay-150"><div class="value-emoji">⚡</div><h3>Relentless Innovation</h3><p>From AI price matching to real-time grid integration, we never stop building the infrastructure for a decentralized energy future.</p></div>
+      <div class="value-card animate-fade-in-up delay-200"><div class="value-emoji">🔐</div><h3>Trust &amp; Security</h3><p>Every producer is verified, every certificate is auditable, every transaction is encrypted. Trust is the foundation of any marketplace.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section">
+  <div class="container">
+    <div style="text-align:center" class="animate-fade-in-up">
+      <div class="sl">The People Behind Renewa</div>
+      <h2 class="sh2">Our Team</h2>
+      <p class="sp" style="margin:0 auto">A team of energy engineers, climate scientists and fintech builders united by a common mission.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card animate-fade-in-up delay-100"><div class="tavatar">SK</div><div class="tname">Sarah Kim</div><div class="trole">CEO &amp; Co-Founder</div><div class="tbio">Former Tesla Energy lead with 12 years in grid-scale storage and renewable policy.</div></div>
+      <div class="team-card animate-fade-in-up delay-150"><div class="tavatar">MR</div><div class="tname">Marcus Rivera</div><div class="trole">CTO &amp; Co-Founder</div><div class="tbio">Built distributed systems at Stripe and Cloudflare before turning to clean energy.</div></div>
+      <div class="team-card animate-fade-in-up delay-200"><div class="tavatar">AP</div><div class="tname">Dr. Amara Patel</div><div class="trole">Head of Impact</div><div class="tbio">Climate scientist, Oxford PhD. Designed Renewa's carbon accounting methodology.</div></div>
+      <div class="team-card animate-fade-in-up delay-100"><div class="tavatar">JL</div><div class="tname">James Liu</div><div class="trole">Head of Markets</div><div class="tbio">Ex-Goldman Sachs commodities trader with deep expertise in energy futures.</div></div>
+      <div class="team-card animate-fade-in-up delay-150"><div class="tavatar">FC</div><div class="tname">Fatima Chen</div><div class="trole">Head of Product</div><div class="tbio">Designed marketplaces at Airbnb and Etsy. Obsessed with making complexity feel simple.</div></div>
+      <div class="team-card animate-fade-in-up delay-200"><div class="tavatar">OB</div><div class="tname">Olumide Bello</div><div class="trole">Head of Partnerships</div><div class="tbio">Led expansion across 18 African countries. Focused on emerging market energy access.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Partners -->
+<section class="section section-alt">
+  <div class="container" style="text-align:center">
+    <div class="animate-fade-in-up">
+      <div class="sl">Trusted By</div>
+      <h2 class="sh2">Partners &amp; Certifications</h2>
+      <p class="sp" style="margin:0 auto">Working with leading organizations to verify, certify, and scale renewable energy trading.</p>
+    </div>
+    <div class="partners-row animate-fade-in-up delay-100">
+      <div class="partner-pill">🌱 RE100</div>
+      <div class="partner-pill">⚡ EnergyWeb</div>
+      <div class="partner-pill">✅ Green-e Certified</div>
+      <div class="partner-pill">🏛️ IRENA Partner</div>
+      <div class="partner-pill">🔒 ISO 50001</div>
+      <div class="partner-pill">📋 REC Registry</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="about-cta">
+  <div class="container">
+    <div class="animate-fade-in-up">
+      <h2>Ready to be part of the <span class="text-gradient">solution?</span></h2>
+      <p>Join thousands of producers, consumers and investors already building a cleaner energy future on Renewa.</p>
+      <div class="cta-row">
+        <a class="btn btn-default btn-lg btn-rounded" href="auth.html">Start Free Today <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        <a class="btn btn-outline btn-lg btn-rounded" href="marketplace.html">Explore Marketplace</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand"><div class="footer-logo"><div class="nav-logo-icon" style="width:2rem;height:2rem;border-radius:0.5rem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div><span class="footer-brand-text">Renewa</span></div><p>Peer-to-peer renewable energy trading platform empowering a sustainable future globally.</p></div>
+      <div class="footer-col"><h4>Platform</h4><ul><li><a href="marketplace.html">Marketplace</a></li><li><a href="about.html">About</a></li><li><a href="auth.html">Sign In</a></li></ul></div>
+      <div class="footer-col"><h4>Resources</h4><ul><li><a href="#">Blog</a></li><li><a href="#">API Docs</a></li><li><a href="#">Press Kit</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Cookies</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">© 2026 Renewa Inc. All rights reserved.</div>
+  </div>
+</footer>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/razorpay.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => injectNavbar('about'));
+  function toggleFaq(el) {
+    const item = el.closest('.faq-item');
+    const open = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!open) item.classList.add('open');
+  }
+</script>
+</body>
+</html>

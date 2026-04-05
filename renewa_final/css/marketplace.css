@@ -1,0 +1,223 @@
+/* ============================================================
+   RENEWA — Marketplace Page
+   ============================================================ */
+
+.marketplace-header {
+  padding-top: 3rem;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+@media (min-width: 768px) {
+  .marketplace-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+.marketplace-header h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+.marketplace-header p {
+  font-size: 1rem;
+  color: var(--muted-fg);
+}
+
+/* Search + Filter */
+.search-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+.search-wrap {
+  position: relative;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted-fg);
+  pointer-events: none;
+}
+.search-input {
+  padding: 0.625rem 1rem 0.625rem 2.5rem;
+  width: 18rem;
+  height: 3rem;
+  border: 1.5px solid var(--border);
+  border-radius: 50rem;
+  background: var(--card);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-10);
+}
+.search-input::placeholder { color: var(--muted-fg); opacity: 0.7; }
+
+.filter-btn {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.filter-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-10);
+}
+.filter-btn svg { width: 1rem; height: 1rem; color: var(--muted-fg); }
+
+/* Listings Grid */
+.listings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding-bottom: 4rem;
+}
+@media (min-width: 640px)  { .listings-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .listings-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Listing Card */
+.listing-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.28s ease;
+  box-shadow: var(--shadow-sm);
+}
+.listing-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: hsla(152,76%,40%,0.2);
+}
+
+.listing-card-head { padding: 1.5rem 1.5rem 0.75rem; }
+.listing-badges {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.875rem;
+}
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--muted);
+  color: var(--foreground);
+  padding: 0.3rem 0.75rem;
+  border-radius: 50rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.type-badge svg { width: 0.9rem; height: 0.9rem; }
+.cert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--emerald-10);
+  color: var(--emerald-500);
+  padding: 0.3rem 0.65rem;
+  border-radius: 50rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+.cert-badge svg { width: 0.75rem; height: 0.75rem; }
+
+.listing-card h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+}
+.listing-card-location {
+  font-size: 0.82rem;
+  color: var(--muted-fg);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.listing-card-location svg { width: 0.75rem; height: 0.75rem; }
+
+/* Stats box */
+.listing-stats {
+  margin: 0.875rem 1.5rem;
+  background: var(--muted);
+  border-radius: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.listing-stat {
+  padding: 1rem 1.1rem;
+}
+.listing-stat:first-child {
+  border-right: 1px solid var(--border);
+}
+.listing-stat-label {
+  font-size: 0.67rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--muted-fg);
+  margin-bottom: 0.3rem;
+}
+.listing-stat-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.listing-stat-value span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted-fg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-left: 0.15rem;
+}
+
+.listing-card-footer {
+  padding: 0.75rem 1.5rem 1.5rem;
+  margin-top: auto;
+}
+.btn-purchase {
+  width: 100%;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: var(--primary-fg);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px var(--primary-20);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.btn-purchase:hover {
+  background: hsl(152, 76%, 34%);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px var(--primary-20);
+}
+.btn-purchase:active { transform: scale(0.98); }

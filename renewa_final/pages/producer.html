@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Producer Dashboard — Renewa</title>
+  <link rel="stylesheet" href="../css/styles.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/toast.css" />
+  <link rel="stylesheet" href="../css/dashboard.css" />
+</head>
+<body>
+
+<header class="navbar" role="banner"></header>
+
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<main role="main">
+  <div class="container dashboard-page">
+
+    <!-- Header -->
+    <div class="dash-header">
+      <div>
+        <h1 class="dash-title animate-fade-in-up">Producer Dashboard</h1>
+        <p class="dash-subtitle animate-fade-in-up delay-100">Manage your energy generation, listings, and revenue.</p>
+      </div>
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap" class="animate-fade-in-up delay-200">
+        <button class="btn btn-outline" onclick="showToast('Export', 'Downloading production report...')">Export Report</button>
+        <button class="btn btn-default" onclick="openListingModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Listing
+        </button>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-cards-row cols-4 animate-fade-in-up delay-100">
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Today's Generation</div>
+            <div class="stat-card-value">1,245 <span class="stat-card-unit">kWh</span></div>
+          </div>
+          <div class="stat-icon" style="background:var(--yellow-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow-500)" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub"><span class="badge badge-emerald">+14%</span> vs yesterday</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Total Revenue</div>
+            <div class="stat-card-value" id="statRevenue">₹0</div>
+          </div>
+          <div class="stat-icon" style="background:var(--primary-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub"><span class="badge badge-emerald">+8.2%</span> vs last month</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">Units Sold</div>
+            <div class="stat-card-value" id="statKwhSold">0 <span class="stat-card-unit">kWh</span></div>
+          </div>
+          <div class="stat-icon" style="background:var(--blue-10)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2" stroke-linecap="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub">This month</div>
+      </div>
+
+      <div class="stat-card stat-card-featured">
+        <div class="stat-card-inner">
+          <div>
+            <div class="stat-card-label">AI Price Suggestion</div>
+            <div class="stat-card-value" id="aiPriceVal">— <span class="stat-card-unit">/kWh</span></div>
+          </div>
+          <div class="stat-icon" style="background:rgba(255,255,255,0.15)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+        </div>
+        <div class="stat-card-sub" id="aiPriceSub">⚡ Calculating from market data...</div>
+      </div>
+    </div>
+
+    <!-- Row 1: Realtime + AI box + Wallet -->
+    <div class="dash-content-grid ratio-2-1 animate-fade-in-up delay-200">
+      <!-- Realtime Production -->
+      <div class="card">
+        <div class="card-header">
+          <h3>Real-Time Production</h3>
+          <div class="realtime-status"><div class="realtime-dot"></div> Live</div>
+        </div>
+        <div class="card-content" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center">
+          <div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.25rem">Current Output</div>
+            <div class="realtime-value"><span id="realtimeValue">78.4</span><span class="realtime-unit"> kW</span></div>
+            <div style="font-size:0.78rem;color:var(--muted-fg);margin-top:0.25rem">Solar Array A + Wind W1 combined</div>
+            <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+              <span class="badge badge-emerald">● Solar: 52.1 kW</span>
+              <span class="badge badge-blue" style="background:var(--blue-10);color:var(--secondary)">● Wind: 26.3 kW</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:700;color:var(--muted-fg);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem">Last 20 readings</div>
+            <div id="realtimeBars" class="realtime-mini-bars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI + Wallet -->
+      <div style="display:flex;flex-direction:column;gap:1.25rem">
+        <!-- AI Box -->
+        <div class="ai-box">
+          <div class="ai-box-header">
+            <div class="ai-box-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <div class="ai-box-title">AI Price Recommendation</div>
+          </div>
+          <div class="ai-price-big" id="aiPriceBig">₹—<span style="font-size:1rem;font-weight:600;color:var(--muted-fg)">/kWh</span></div>
+          <div class="ai-price-sub" id="aiPriceDetail">Calculating from marketplace data...</div>
+          <div style="display:flex;gap:0.5rem;margin-top:0.875rem">
+            <button class="btn btn-default btn-sm" onclick="showToast('Price Applied ✓', 'Listings updated to $0.12/kWh')">Apply Price</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('AI Analysis', 'Fetching latest demand forecast...')">View Analysis</button>
+          </div>
+        </div>
+
+        <!-- Wallet -->
+        <div class="wallet-box">
+          <div class="wallet-label">Wallet Earnings</div>
+          <div class="wallet-amount" id="producerWalletAmt">₹0.00</div>
+          <div class="wallet-sub" id="producerWalletSub">Loading earnings...</div>
+          <div class="wallet-actions">
+            <button class="wallet-btn wallet-btn-primary" onclick="showToast('Withdraw', 'Processing withdrawal...')">Withdraw</button>
+            <button class="wallet-btn wallet-btn-secondary" onclick="showToast('History', 'Loading transaction history...')">History</button>
+          </div>
+        </div>
+
+        <!-- Face ID Card -->
+        <div class="wallet-box" style="margin-top:.75rem">
+          <div class="wallet-label">🔐 Face ID Login</div>
+          <div id="faceStatusBadge" style="font-size:.85rem;font-weight:700;color:var(--muted-fg);margin:.25rem 0 .5rem">Checking…</div>
+          <div id="kycStatusBadge" style="font-size:.82rem;font-weight:700;margin:.15rem 0 .5rem;color:#f59e0b;">⚠️ KYC Pending</div>
+          <div class="wallet-actions">
+            <button class="wallet-btn wallet-btn-primary" onclick="openFaceRegisterModal()">Setup Face ID</button>
+            <button class="wallet-btn wallet-btn-primary" style="background:#2563eb;margin-top:.4rem;width:100%" onclick="openKYCModal()">🪪 Complete KYC</button>
+            <button class="wallet-btn wallet-btn-secondary" onclick="removeFaceId()">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Charts -->
+    <div class="dash-content-grid ratio-1-1 animate-fade-in-up delay-200">
+      <div class="card">
+        <div class="card-header">
+          <h3>Daily Energy Produced (kWh)</h3>
+          <div class="card-header-actions">
+            <div class="chart-legend">
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:hsl(45,93%,47%)"></div>kWh</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="chart-container" id="chartDailyEnergy"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Monthly Revenue ($)</h3>
+          <div class="card-header-actions">
+            <div class="chart-legend">
+              <div class="chart-legend-item"><div class="chart-legend-dot" style="background:hsl(152,76%,40%)"></div>Revenue</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="chart-container" id="chartMonthlyRevenue"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Demand Trends + Recent Transactions -->
+    <div class="dash-content-grid ratio-2-1 animate-fade-in-up delay-300">
+      <div class="card">
+        <div class="card-header">
+          <h3>Buyer Demand Trends (Today)</h3>
+        </div>
+        <div class="card-content">
+          <div class="chart-container chart-container-sm" id="chartDemandTrends"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h3>Recent Transactions</h3></div>
+        <div class="card-content">
+          <div class="tx-list" id="txList">
+            <div style="text-align:center;padding:1.5rem;color:var(--muted-fg);font-size:0.85rem">Loading transactions...</div>
+          </div>
+          <button class="btn btn-outline" style="width:100%;margin-top:1rem;border-radius:0.75rem" onclick="showToast('Transactions', 'Showing all recent sales above')">View All</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 4: Energy Listings Table -->
+    <div class="card animate-fade-in-up delay-300">
+      <div class="card-header">
+        <h3>Energy Listings</h3>
+        <div class="card-header-actions">
+          <button class="btn btn-default btn-sm" onclick="openListingModal()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Listing
+          </button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="listings-table">
+          <thead>
+            <tr>
+              <th>Listing Name</th>
+              <th>Type</th>
+              <th>Available</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="listingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+  <!-- ================= LISTING CREATOR MODAL ================= -->
+<div id="listingModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);align-items:center;justify-content:center;z-index:999;padding:1rem;box-sizing:border-box;">
+  <div style="background:var(--card);border-radius:1.25rem;padding:2rem;max-width:520px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,0.25);animation:fadeInUp 0.25s ease;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.25rem">
+      <h3 style="font-size:1.2rem;font-weight:800">Create New Listing</h3>
+      <button onclick="closeListingModal()" style="background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--muted-fg);padding:0.25rem">✕</button>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted-fg);margin-bottom:1.5rem">List your renewable energy on the marketplace</p>
+    <form id="listingForm">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group">
+          <label class="form-label">Energy Type</label>
+          <select id="type" class="form-control">
+            <option>Solar</option><option>Wind</option><option>Biomass</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Available (kWh)</label>
+          <input id="kwh" type="number" class="form-control" placeholder="500" required/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group">
+          <label class="form-label">Price per kWh (₹)</label>
+          <input id="price" type="number" class="form-control" placeholder="0.12" step="0.01" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input id="loc" class="form-control" placeholder="City, State" required/>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="form-group">
+          <label class="form-label">Availability</label>
+          <select id="avail" class="form-control">
+            <option>Available Now</option><option>Scheduled</option><option>24/7</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Certification</label>
+          <select id="cert" class="form-control">
+            <option>REC Certified</option><option>ISO 50001</option><option>Green-e</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea id="desc" class="form-control" placeholder="e.g. Rooftop solar array, peak 80 kW" rows="2" style="resize:vertical"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Listing Image <span style="color:var(--muted-fg);font-weight:400">(optional - will show in marketplace)</span></label>
+        <input id="image" type="file" accept="image/*" class="form-control" style="padding:0.4rem 0.75rem;cursor:pointer"/>
+      </div>
+      <div id="listingMsg" style="display:none;margin-bottom:0.75rem;padding:0.65rem 1rem;border-radius:0.6rem;font-size:0.82rem;font-weight:600"></div>
+      <div style="display:flex;gap:0.75rem;margin-top:0.5rem">
+        <button type="button" class="btn btn-outline" onclick="closeListingModal()" style="flex:1">Cancel</button>
+        <button type="submit" class="btn btn-default" style="flex:2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Post Listing
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/session.js"></script>
+<script src="../js/razorpay.js"></script>
+<script src="../js/nav.js"></script>
+<script src="../js/app.js"></script>
+<script src="../js/charts.js"></script>
+<script src="../js/producer.js"></script>
+<script>
+  // ── relative time helper ──────────────────────────────────────
+  function timeAgo(dateStr) {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    const hrs  = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+    if (mins < 2)   return 'just now';
+    if (mins < 60)  return `${mins}m ago`;
+    if (hrs < 24)   return `${hrs}h ago`;
+    if (days < 7)   return `${days}d ago`;
+    return new Date(dateStr).toLocaleDateString();
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    if (!Session.isLoggedIn()) { window.location.href = 'auth.html'; return; }
+    const user = Session.get();
+    const roleMap = { consumer: 'consumer.html', producer: 'producer.html', investor: 'investor.html' };
+    if (user.role !== 'producer') { window.location.href = roleMap[user.role] || 'consumer.html'; return; }
+    injectNavbar('dashboard');
+
+    const token = user.token || localStorage.getItem('token');
+
+    try {
+      const res = await fetch('http://localhost:5000/api/dashboard/producer', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+
+      if (!res.ok) throw new Error('API error ' + res.status);
+      const data = await res.json();
+
+      // ── Stats ────────────────────────────────────────────────
+      const revenue  = data.stats?.revenue ?? 0;
+      const kwhSold  = data.stats?.kwhSold ?? 0;
+      const active   = data.stats?.active  ?? 0;
+      const aiPrice  = data.stats?.aiPrice;
+      const walBal   = data.stats?.walletBalance ?? data.user?.walletBalance ?? 0;
+
+      // Update stat cards
+      const statRev = document.getElementById('statRevenue');
+      if (statRev) statRev.innerHTML = '₹' + Number(revenue).toLocaleString('en-IN', {maximumFractionDigits:0}) + ' <span class="stat-card-unit">earned</span>';
+
+      const statKwh = document.getElementById('statKwhSold');
+      if (statKwh) statKwh.innerHTML = Number(kwhSold).toLocaleString() + ' <span class="stat-card-unit">kWh</span>';
+
+      // Wallet
+      const walEl  = document.getElementById('producerWalletAmt');
+      const walSub = document.getElementById('producerWalletSub');
+      if (walEl)  walEl.textContent  = '₹' + Number(walBal).toFixed(2);
+      if (walSub) walSub.textContent = `${kwhSold.toLocaleString()} kWh sold · ${active} active listing${active!==1?'s':''}`;
+
+      // ── AI Price ─────────────────────────────────────────────
+      const aiValEl     = document.getElementById('aiPriceVal');
+      const aiSubEl     = document.getElementById('aiPriceSub');
+      const aiBigEl     = document.getElementById('aiPriceBig');
+      const aiDetailEl  = document.getElementById('aiPriceDetail');
+
+      if (aiPrice) {
+        const priceStr = '₹' + aiPrice.toFixed(3);
+        if (aiValEl)    aiValEl.innerHTML   = priceStr + ' <span class="stat-card-unit">/kWh</span>';
+        if (aiSubEl)    aiSubEl.textContent = kwhSold > 0 ? '⚡ Optimised — based on recent sales' : '📊 Based on marketplace average';
+        if (aiBigEl)    aiBigEl.innerHTML   = priceStr + '<span style="font-size:1rem;font-weight:600;color:var(--muted-fg)">/kWh</span>';
+        if (aiDetailEl) aiDetailEl.textContent = kwhSold > 0
+          ? `↑ from market avg — high demand detected`
+          : `Market average across all active listings`;
+        // Update Apply Price button
+        document.querySelectorAll('.ai-box .btn').forEach(b => {
+          if (b.textContent.trim() === 'Apply Price') {
+            b.onclick = () => showToast('Price Applied ✓', `Listings updated to ${priceStr}/kWh`);
+          }
+        });
+      } else {
+        if (aiValEl)    aiValEl.innerHTML   = 'N/A <span class="stat-card-unit">/kWh</span>';
+        if (aiSubEl)    aiSubEl.textContent = 'No active listings yet';
+        if (aiBigEl)    aiBigEl.innerHTML   = 'N/A<span style="font-size:1rem;font-weight:600;color:var(--muted-fg)">/kWh</span>';
+        if (aiDetailEl) aiDetailEl.textContent = 'Add listings to get a price recommendation';
+      }
+
+      // ── Transactions ─────────────────────────────────────────
+      const txList = document.getElementById('txList');
+      if (txList) {
+        const txs = data.transactions || [];
+        if (!txs.length) {
+          txList.innerHTML = '<div style="text-align:center;padding:1.5rem;color:var(--muted-fg);font-size:0.85rem">No transactions yet. Once buyers purchase your energy, they\'ll appear here.</div>';
+        } else {
+          txList.innerHTML = txs.map(tx => `
+            <div class="tx-item">
+              <div>
+                <div class="tx-buyer">${tx.buyerName}</div>
+                <div class="tx-time">${timeAgo(tx.createdAt)}</div>
+              </div>
+              <div>
+                <div class="tx-price">₹${Number(tx.total).toFixed(2)}</div>
+                <div class="tx-kwh">${tx.kwh.toLocaleString()} kWh · ${tx.type}</div>
+              </div>
+            </div>`).join('');
+        }
+      }
+
+    } catch (e) {
+      console.warn('Producer dashboard fetch failed:', e.message);
+      // Show fallback for transactions
+      const txList = document.getElementById('txList');
+      if (txList) txList.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--muted-fg);font-size:0.82rem">⚠️ Could not load transactions. Is backend running?</div>';
+      const aiValEl = document.getElementById('aiPriceVal');
+      if (aiValEl) aiValEl.innerHTML = '— <span class="stat-card-unit">/kWh</span>';
+      const aiSubEl = document.getElementById('aiPriceSub');
+      if (aiSubEl) aiSubEl.textContent = 'Backend offline';
+    }
+  });
+</script>
+
+<!-- ── Razorpay Wallet Top-Up Modal ─────────────────────────── -->
+<div id="topupMod" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);border-radius:16px;padding:2rem;width:min(380px,92vw);box-shadow:0 8px 32px rgba(0,0,0,.2);">
+    <h2 style="margin:0 0 1rem;font-size:1.25rem;">Add Funds to Wallet</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem;">
+      <button class="btn btn-outline" onclick="selectTopup(500)">₹500</button>
+      <button class="btn btn-outline" onclick="selectTopup(1000)">₹1,000</button>
+      <button class="btn btn-outline" onclick="selectTopup(2000)">₹2,000</button>
+      <button class="btn btn-outline" onclick="selectTopup(5000)">₹5,000</button>
+    </div>
+    <div style="display:flex;gap:.5rem;margin-bottom:1.25rem;">
+      <input id="topupCustom" type="number" min="1" placeholder="Custom amount (₹)" style="flex:1;padding:.6rem .8rem;border:1px solid var(--border,#ddd);border-radius:8px;font-size:.95rem;"/>
+    </div>
+    <div style="display:flex;gap:.75rem;">
+      <button class="btn btn-default" style="flex:1;" onclick="proceedTopup()">Pay with Razorpay</button>
+      <button class="btn btn-outline" onclick="closeTopupModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+<script>
+  function openTopupModal() { document.getElementById('topupMod').style.display = 'flex'; }
+  function closeTopupModal() { document.getElementById('topupMod').style.display = 'none'; }
+  function selectTopup(a) { document.getElementById('topupCustom').value = a; }
+  function proceedTopup() {
+    const amount = parseFloat(document.getElementById('topupCustom').value);
+    if (!amount || amount < 1) { showToast('Invalid Amount', 'Enter a valid amount'); return; }
+    closeTopupModal();
+    razorpayWalletTopup(amount);
+  }
+</script>
+
+<script src="../js/face.js"></script>
+<script src="../js/kyc.js"></script>
+
+<!-- Face Register Modal -->
+<!-- ── Face Register Modal ───────────────────────────────────── -->
+<div id="faceRegMod" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:var(--card-bg,#fff);border-radius:16px;padding:1.75rem;width:min(440px,95vw);box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <h2 style="margin:0;font-size:1.15rem;">🔐 Setup Face ID</h2>
+      <button onclick="closeFaceRegModal()" style="border:none;background:none;font-size:1.5rem;cursor:pointer;line-height:1;color:#888">✕</button>
+    </div>
+
+    <!-- Status bar -->
+    <div id="faceRegStatus" style="font-size:.82rem;font-weight:700;padding:.5rem .75rem;background:#eff6ff;border-radius:.5rem;margin-bottom:.75rem;color:#2563eb;min-height:2.2em;line-height:1.4;white-space:pre-line;">
+      Click "Start Camera" below to begin
+    </div>
+
+    <!-- Camera + canvas overlay -->
+    <div style="position:relative;width:100%;background:#0f172a;border-radius:.875rem;overflow:hidden;border:2px solid #334155;margin-bottom:.75rem;aspect-ratio:4/3;">
+      <video id="faceRegVideo" autoplay muted playsinline
+        style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block;"></video>
+      <canvas id="faceRegCanvas"
+        style="position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1);pointer-events:none;"></canvas>
+      <!-- Oval guide -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+        <div style="width:48%;aspect-ratio:3/4;border:3px dashed rgba(255,255,255,.45);border-radius:50%;box-shadow:0 0 0 1000px rgba(0,0,0,.15)inset;"></div>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;">
+      <button id="faceRegStartBtn" onclick="startFaceReg()"
+        style="padding:.7rem;border-radius:.75rem;border:none;background:#2563eb;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;">
+        📷 Start Camera
+      </button>
+      <button id="faceRegCaptureBtn" onclick="captureFaceReg()"
+        style="display:none;padding:.7rem;border-radius:.75rem;border:none;background:#16a34a;color:#fff;font-weight:700;font-size:.88rem;cursor:pointer;">
+        ✅ Register Face
+      </button>
+    </div>
+
+    <p style="font-size:.72rem;color:#94a3b8;margin:.75rem 0 0;line-height:1.5;">
+      💡 Only a mathematical vector is stored — never a photo. Your face data stays private on your own server.
+    </p>
+  </div>
+</div>
+
+<script>
+async function openFaceRegisterModal() {
+  document.getElementById('faceRegMod').style.display = 'flex';
+}
+
+function closeFaceRegModal() {
+  stopFaceCamera();
+  document.getElementById('faceRegMod').style.display = 'none';
+  const sb = document.getElementById('faceRegStartBtn');
+  const cb = document.getElementById('faceRegCaptureBtn');
+  if (sb) { sb.style.display = 'block'; sb.disabled = false; sb.textContent = '📷 Start Camera'; }
+  if (cb) { cb.style.display = 'none';  cb.disabled = false; cb.textContent = '✅ Register Face'; }
+  updateFaceStatusEl('faceRegStatus', 'Click "Start Camera" below to begin', 'waiting');
+}
+
+async function startFaceReg() {
+  const sb = document.getElementById('faceRegStartBtn');
+  const cb = document.getElementById('faceRegCaptureBtn');
+  sb.disabled = true;
+  sb.textContent = '⏳ Loading models…';
+  updateFaceStatusEl('faceRegStatus', '⏳ Loading AI face models (first time may take ~10s)…', 'waiting');
+
+  try {
+    await loadFaceModels();
+    updateFaceStatusEl('faceRegStatus', '📷 Starting camera…', 'waiting');
+    await startFaceCamera('faceRegVideo');
+    startLiveDetection('faceRegVideo', 'faceRegCanvas', 'faceRegStatus');
+    sb.style.display = 'none';
+    cb.style.display = 'block';
+  } catch(e) {
+    updateFaceStatusEl('faceRegStatus', '❌ ' + e.message, 'error');
+    sb.disabled = false;
+    sb.textContent = '🔄 Retry';
+  }
+}
+
+async function captureFaceReg() {
+  const cb = document.getElementById('faceRegCaptureBtn');
+  const statusEl = document.getElementById('faceRegStatus');
+  cb.disabled = true;
+  cb.textContent = '⏳ Detecting…';
+
+  // Show token status immediately so we can debug
+  const token = localStorage.getItem('token') ||
+    (() => { try { return JSON.parse(sessionStorage.getItem('renewa_user'))?.token; } catch { return null; } })();
+
+  if (!token) {
+    cb.disabled = false;
+    cb.textContent = '🔄 Try Again';
+    if (statusEl) { statusEl.textContent = '❌ Not logged in — please log out and log back in'; statusEl.style.color = '#dc2626'; }
+    return;
+  }
+
+  const ok = await registerFace('faceRegVideo', 'faceRegStatus');
+  cb.disabled = false;
+  cb.textContent = ok ? '✅ Registered!' : '🔄 Try Again';
+  if (ok) {
+    if (typeof checkFaceStatus === 'function') checkFaceStatus();
+    setTimeout(closeFaceRegModal, 2200);
+  }
+}
+
+async function removeFaceId() {
+  if (!confirm('Remove your Face ID? You will need to re-register to use face login.')) return;
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res  = await fetch('http://localhost:5000/api/face/remove', {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    if (typeof showToast === 'function') showToast('Face ID Removed', data.message);
+    checkFaceStatus();
+  } catch(e) {
+    alert('Error removing face data: ' + e.message);
+  }
+}
+
+async function checkFaceStatus() {
+  const token = getToken();
+  const badge = document.getElementById('faceStatusBadge');
+  if (!token || !badge) return;
+  try {
+    const res  = await fetch('http://localhost:5000/api/face/status', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    badge.innerHTML = data.faceRegistered
+      ? '<span style="color:#16a34a;font-weight:700;">✅ Face ID active</span>'
+      : '<span style="color:#f59e0b;font-weight:700;">⚠️ Not set up yet</span>';
+  } catch {
+    badge.textContent = 'Could not check status';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => { setTimeout(checkFaceStatus, 1000); initKYCBanner(); });
+</script>
+</body>
+</html>
